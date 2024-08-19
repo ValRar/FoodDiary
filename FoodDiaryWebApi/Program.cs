@@ -13,6 +13,8 @@ builder.Services.AddControllers();
 builder.Services.Configure<JwtConfiguration>(builder.Configuration.GetSection("Jwt"));
 builder.Services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
+builder.Services.AddSingleton<IPasswordRecoveryService, PasswordRecoveryService>();
+builder.Services.AddSingleton<IMailService, MailService>();
 builder.Services.AddDbContext<FoodDiaryDbContext>();
 
 var securityKey = builder.Configuration.GetSection("Jwt")["SecurityKey"];

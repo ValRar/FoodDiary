@@ -26,7 +26,7 @@ namespace FoodDiaryWebApi.Services.Implementations
             var oldToken = token.Value;
             token.Value = GenerateRefreshToken();
             await _dbContext.SaveChangesAsync();
-            return new (oldToken, token.Value);
+            return new(oldToken, token.Value);
         }
 
         public Tuple<Guid, string> CreateSession(UserEntity user)

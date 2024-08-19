@@ -4,22 +4,25 @@ using FoodDiaryWebApi.Data.Requests;
 using FoodDiaryWebApi.Services.Implementations;
 using FoodDiaryWebApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodDiaryWebApi.Controllers
 {
-    [Route("[controller]")]
+    [Route("auth")]
     [ApiController]
     public class JwtAuthenticationController : ControllerBase
     {
         private readonly FoodDiaryDbContext _db;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
         private readonly IRefreshTokenService _refreshTokenService;
-        public JwtAuthenticationController(FoodDiaryDbContext db, IJwtTokenGenerator jwtTokenGenerator, IRefreshTokenService refreshTokenService)
+        private readonly IPasswordRecoveryService _passwordRecoveryService;
+        public JwtAuthenticationController(FoodDiaryDbContext db, IJwtTokenGenerator jwtTokenGenerator,
+            IRefreshTokenService refreshTokenService, IPasswordRecoveryService passwordRecoveryService)
         {
             _db = db;
             _jwtTokenGenerator = jwtTokenGenerator;
             _refreshTokenService = refreshTokenService;
+            _passwordRecoveryService = passwordRecoveryService;
         }
 
         [HttpPost("register")]
@@ -45,7 +48,7 @@ namespace FoodDiaryWebApi.Controllers
         public async Task<IResult> Login(AuthenticationRequest authenticationRequest)
         {
             var user = _db.Users.FirstOrDefault(u => u.Email == authenticationRequest.Email);
-            if (user == null)
+            if (user is null)
                 return TypedResults.NotFound(new { ErrorMessage = "User with this email not found!" });
             if (!BCrypt.Net.BCrypt.EnhancedVerify(authenticationRequest.Password, user.PasswordHash))
                 return TypedResults.BadRequest(new { ErrorMessage = "Provided invalid password!" });
@@ -57,27 +60,46 @@ namespace FoodDiaryWebApi.Controllers
         [HttpGet("refresh")]
         public async Task<IResult> Refresh()
         {
-            var userEmail = HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)!.Value;
             var providedRefreshToken = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == Constants.REFRESH_TOKEN_COOKIE).Value;
-            if (providedRefreshToken == null)
+            if (providedRefreshToken is null)
                 return TypedResults.BadRequest(new { ErrorMessage = "Refresh token not provided!" });
             var providedSessionId = GetSessionFromCookie();
-            if (providedSessionId == null)
+            if (providedSessionId is null)
                 return TypedResults.BadRequest(new { ErrorMessage = "Session id not provided!" });
             var tokensPair = await _refreshTokenService.GetTokenAndRefresh(Guid.Parse(providedSessionId));
-            if (tokensPair == null)
+            if (tokensPair is null)
                 return TypedResults.BadRequest(new { ErrorMessage = "Invalid session id provided!" });
             if (providedRefreshToken != tokensPair.Item1)
                 return TypedResults.BadRequest(new { ErrorMessage = "Invalid refresh token provided!" });
             PutRefreshToken(tokensPair.Item2);
+            var userEmail = _db.RefreshTokens.Include(t => t.Owner).First(t => t.SessionId == Guid.Parse(providedSessionId)).Owner.Email;
             return TypedResults.Ok(new { Token = _jwtTokenGenerator.GenerateToken(userEmail) });
+        }
+        [HttpPost("request_recovery")]
+        public IResult RequestRecovery(RecoveryRequest request)
+        {
+            if (!_db.Users.Any(u => u.Email == request.Email))
+                return TypedResults.BadRequest(new { ErrorMessage = "User with this email not exists!" });
+            _passwordRecoveryService.CreateRequest(request.Email);
+            return TypedResults.NoContent();
+        }
+        [HttpPost("recover")]
+        public async Task<IResult> Recover(NewPasswordRequest request)
+        {
+            var email = _passwordRecoveryService.GetEmailByReqId(request.Id);
+            if (email is null)
+                return TypedResults.BadRequest(new { ErrorMessage = "Request with this id not exists!" });
+            var user = _db.Users.First(u => u.Email == email);
+            user.PasswordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(request.NewPassword);
+            await _db.SaveChangesAsync();
+            return TypedResults.NoContent();
         }
         private void PutRefreshTokenAndSession(Tuple<Guid, string> session)
         {
             HttpContext.Response.Cookies.Append(Constants.SESSION_COOKIE, session.Item1.ToString(), new CookieOptions() { HttpOnly = true });
             HttpContext.Response.Cookies.Append(Constants.REFRESH_TOKEN_COOKIE, session.Item2, new CookieOptions() { HttpOnly = true });
         }
-        private void PutRefreshToken(string token) => 
+        private void PutRefreshToken(string token) =>
             HttpContext.Response.Cookies.Append(Constants.REFRESH_TOKEN_COOKIE, token, new CookieOptions() { HttpOnly = true });
         private string? GetSessionFromCookie() => HttpContext.Request.Cookies[Constants.SESSION_COOKIE];
     }
