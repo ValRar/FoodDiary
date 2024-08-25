@@ -6,6 +6,6 @@
         public string Email { get; set; }
         public string PasswordHash { get; set; }
         public List<RefreshTokenEntity> RefreshTokens { get; set; } = new List<RefreshTokenEntity>();
-        public NoteEntity[]? Notes { get; set; }
+        public List<NoteEntity> Notes { get; set; } = new List<NoteEntity>();
     }
 }

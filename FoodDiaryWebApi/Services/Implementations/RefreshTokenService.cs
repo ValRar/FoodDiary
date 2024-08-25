@@ -24,6 +24,7 @@ namespace FoodDiaryWebApi.Services.Implementations
                 return null;
             }
             var oldToken = token.Value;
+            token.Expires = DateTime.UtcNow.AddDays(30);
             token.Value = GenerateRefreshToken();
             await _dbContext.SaveChangesAsync();
             return new(oldToken, token.Value);

@@ -30,6 +30,9 @@ namespace FoodDiaryWebApi.Services.Implementations
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql(_config.GetConnectionString("postgres"));
+            optionsBuilder.EnableSensitiveDataLogging();
+            optionsBuilder.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
         }
+        public DbSet<FoodDiaryWebApi.Data.Entities.NoteEntity> NoteEntity { get; set; } = default!;
     }
 }

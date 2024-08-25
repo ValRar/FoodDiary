@@ -26,11 +26,11 @@ namespace FoodDiaryWebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IResult> Register(AuthenticationRequest authenticationRequest)
+        public async Task<IActionResult> Register(AuthenticationRequest authenticationRequest)
         {
             if (_db.Users.Any(u => u.Email == authenticationRequest.Email))
             {
-                return TypedResults.BadRequest(new { ErrorMessage = "User with this email already exists!" });
+                return BadRequest(new { ErrorMessage = "User with this email already exists!" });
             }
             var passwordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(authenticationRequest.Password);
             var user = new UserEntity()
@@ -39,65 +39,66 @@ namespace FoodDiaryWebApi.Controllers
                 PasswordHash = passwordHash,
             };
             var session = _refreshTokenService.CreateSession(user);
-            PutRefreshTokenAndSession(session);
+            PutRefreshToken(session.Item2);
+            PutSessionId(session.Item1);
             await _db.Users.AddAsync(user);
             await _db.SaveChangesAsync();
-            return TypedResults.Ok(new { Token = _jwtTokenGenerator.GenerateToken(user.Email) });
+            return Ok(new { Token = _jwtTokenGenerator.GenerateToken(user.Email) });
         }
         [HttpPost("login")]
-        public async Task<IResult> Login(AuthenticationRequest authenticationRequest)
+        public async Task<IActionResult> Login(AuthenticationRequest authenticationRequest)
         {
             var user = _db.Users.FirstOrDefault(u => u.Email == authenticationRequest.Email);
             if (user is null)
-                return TypedResults.NotFound(new { ErrorMessage = "User with this email not found!" });
+                return NotFound(new { ErrorMessage = "User with this email not found!" });
             if (!BCrypt.Net.BCrypt.EnhancedVerify(authenticationRequest.Password, user.PasswordHash))
-                return TypedResults.BadRequest(new { ErrorMessage = "Provided invalid password!" });
+                return BadRequest(new { ErrorMessage = "Provided invalid password!" });
             var session = _refreshTokenService.CreateSession(user);
-            PutRefreshTokenAndSession(session);
+            PutRefreshToken(session.Item2);
+            PutSessionId(session.Item1);
             await _db.SaveChangesAsync();
-            return TypedResults.Ok(new { Token = _jwtTokenGenerator.GenerateToken(user.Email) });
+            return Ok(new { Token = _jwtTokenGenerator.GenerateToken(user.Email) });
         }
         [HttpGet("refresh")]
-        public async Task<IResult> Refresh()
+        public async Task<IActionResult> Refresh()
         {
             var providedRefreshToken = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == Constants.REFRESH_TOKEN_COOKIE).Value;
             if (providedRefreshToken is null)
-                return TypedResults.BadRequest(new { ErrorMessage = "Refresh token not provided!" });
+                return BadRequest(new { ErrorMessage = "Refresh token not provided!" });
             var providedSessionId = GetSessionFromCookie();
             if (providedSessionId is null)
-                return TypedResults.BadRequest(new { ErrorMessage = "Session id not provided!" });
+                return BadRequest(new { ErrorMessage = "Session id not provided!" });
             var tokensPair = await _refreshTokenService.GetTokenAndRefresh(Guid.Parse(providedSessionId));
             if (tokensPair is null)
-                return TypedResults.BadRequest(new { ErrorMessage = "Invalid session id provided!" });
+                return BadRequest(new { ErrorMessage = "Invalid session id provided!" });
             if (providedRefreshToken != tokensPair.Item1)
-                return TypedResults.BadRequest(new { ErrorMessage = "Invalid refresh token provided!" });
+                return BadRequest(new { ErrorMessage = "Invalid refresh token provided!" });
             PutRefreshToken(tokensPair.Item2);
-            var userEmail = _db.RefreshTokens.Include(t => t.Owner).First(t => t.SessionId == Guid.Parse(providedSessionId)).Owner.Email;
-            return TypedResults.Ok(new { Token = _jwtTokenGenerator.GenerateToken(userEmail) });
+            var userEmail = _db.RefreshTokens.AsNoTracking().Include(t => t.Owner).First(t => t.SessionId == Guid.Parse(providedSessionId)).Owner.Email;
+            return Ok(new { Token = _jwtTokenGenerator.GenerateToken(userEmail) });
         }
         [HttpPost("request_recovery")]
-        public IResult RequestRecovery(RecoveryRequest request)
+        public IActionResult RequestRecovery(RecoveryRequest request)
         {
             if (!_db.Users.Any(u => u.Email == request.Email))
-                return TypedResults.BadRequest(new { ErrorMessage = "User with this email not exists!" });
+                return BadRequest(new { ErrorMessage = "User with this email not exists!" });
             _passwordRecoveryService.CreateRequest(request.Email);
-            return TypedResults.NoContent();
+            return NoContent();
         }
         [HttpPost("recover")]
-        public async Task<IResult> Recover(NewPasswordRequest request)
+        public async Task<IActionResult> Recover(NewPasswordRequest request)
         {
             var email = _passwordRecoveryService.GetEmailByReqId(request.Id);
             if (email is null)
-                return TypedResults.BadRequest(new { ErrorMessage = "Request with this id not exists!" });
+                return BadRequest(new { ErrorMessage = "Request with this id not exists!" });
             var user = _db.Users.First(u => u.Email == email);
             user.PasswordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(request.NewPassword);
             await _db.SaveChangesAsync();
-            return TypedResults.NoContent();
+            return NoContent();
         }
-        private void PutRefreshTokenAndSession(Tuple<Guid, string> session)
+        private void PutSessionId(Guid sessionId)
         {
-            HttpContext.Response.Cookies.Append(Constants.SESSION_COOKIE, session.Item1.ToString(), new CookieOptions() { HttpOnly = true });
-            HttpContext.Response.Cookies.Append(Constants.REFRESH_TOKEN_COOKIE, session.Item2, new CookieOptions() { HttpOnly = true });
+            HttpContext.Response.Cookies.Append(Constants.SESSION_COOKIE, sessionId.ToString(), new CookieOptions() { HttpOnly = true });
         }
         private void PutRefreshToken(string token) =>
             HttpContext.Response.Cookies.Append(Constants.REFRESH_TOKEN_COOKIE, token, new CookieOptions() { HttpOnly = true });

@@ -2,7 +2,6 @@
   "profiles": {
     "http": {
       "commandName": "Project",
-      "launchBrowser": false,
       "launchUrl": "weatherforecast",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -12,8 +11,7 @@
     },
     "https": {
       "commandName": "Project",
-      "launchBrowser": false,
-      "launchUrl": "weatherforecast",
+      "launchUrl": "/",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
