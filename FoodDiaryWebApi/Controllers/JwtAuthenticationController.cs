@@ -62,7 +62,7 @@ namespace FoodDiaryWebApi.Controllers
         [HttpGet("refresh")]
         public async Task<IActionResult> Refresh()
         {
-            var providedRefreshToken = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == Constants.REFRESH_TOKEN_COOKIE).Value;
+            var providedRefreshToken = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == CookieNames.RefreshToken).Value;
             if (providedRefreshToken is null)
                 return BadRequest(new { ErrorMessage = "Refresh token not provided!" });
             var providedSessionId = GetSessionFromCookie();
@@ -98,10 +98,10 @@ namespace FoodDiaryWebApi.Controllers
         }
         private void PutSessionId(Guid sessionId)
         {
-            HttpContext.Response.Cookies.Append(Constants.SESSION_COOKIE, sessionId.ToString(), new CookieOptions() { HttpOnly = true });
+            HttpContext.Response.Cookies.Append(CookieNames.Session, sessionId.ToString(), new CookieOptions() { HttpOnly = true });
         }
         private void PutRefreshToken(string token) =>
-            HttpContext.Response.Cookies.Append(Constants.REFRESH_TOKEN_COOKIE, token, new CookieOptions() { HttpOnly = true });
-        private string? GetSessionFromCookie() => HttpContext.Request.Cookies[Constants.SESSION_COOKIE];
+            HttpContext.Response.Cookies.Append(CookieNames.RefreshToken, token, new CookieOptions() { HttpOnly = true });
+        private string? GetSessionFromCookie() => HttpContext.Request.Cookies[CookieNames.Session];
     }
 }

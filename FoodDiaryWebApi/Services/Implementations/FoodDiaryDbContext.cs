@@ -8,6 +8,7 @@ namespace FoodDiaryWebApi.Services.Implementations
         private readonly IConfiguration _config;
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
+        public DbSet<NoteEntity> Notes { get; set; }
         public FoodDiaryDbContext(IConfiguration config)
         {
             _config = config;
@@ -18,13 +19,16 @@ namespace FoodDiaryWebApi.Services.Implementations
             {
                 builder.ToTable("Users");
                 builder.HasKey(x => x.Id);
-                builder.HasMany(x => x.Notes).WithOne(x => x.Author);
+                builder.HasMany(x => x.Notes)
+                    .WithOne(x => x.Author)
+                    .HasForeignKey(x => x.AuthorId);
                 builder.HasMany(x => x.RefreshTokens).WithOne(x => x.Owner);
             });
             modelBuilder.Entity<NoteEntity>(builder =>
             {
                 builder.ToTable("Notes");
                 builder.HasKey(x => x.Id);
+                builder.HasMany(x => x.Entries);
             });
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -33,6 +37,5 @@ namespace FoodDiaryWebApi.Services.Implementations
             optionsBuilder.EnableSensitiveDataLogging();
             optionsBuilder.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
         }
-        public DbSet<FoodDiaryWebApi.Data.Entities.NoteEntity> NoteEntity { get; set; } = default!;
     }
 }

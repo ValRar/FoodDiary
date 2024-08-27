@@ -1,8 +1,9 @@
-﻿namespace FoodDiaryWebApi.Data.Requests
+﻿using FoodDiaryWebApi.Data.DTO;
+
+namespace FoodDiaryWebApi.Data.Requests
 {
     public class NoteAddRequest
     {
-        public string Content { get; set; }
-        public int? Calories { get; set; }
+        public NoteEntry[] Entries { get; set; }
     }
 }
