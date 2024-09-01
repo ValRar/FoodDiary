@@ -1,10 +1,12 @@
 ﻿using FoodDiaryWebApi.Configurations;
 using FoodDiaryWebApi.Data.Entities;
 using FoodDiaryWebApi.Data.Requests;
+using FoodDiaryWebApi.Data.Responses;
 using FoodDiaryWebApi.Services.Implementations;
 using FoodDiaryWebApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Common;
 
 namespace FoodDiaryWebApi.Controllers
 {
@@ -38,12 +40,15 @@ namespace FoodDiaryWebApi.Controllers
                 Email = authenticationRequest.Email,
                 PasswordHash = passwordHash,
             };
-            var session = _refreshTokenService.CreateSession(user);
-            PutRefreshToken(session.Item2);
-            PutSessionId(session.Item1);
             await _db.Users.AddAsync(user);
-            await _db.SaveChangesAsync();
-            return Ok(new { Token = _jwtTokenGenerator.GenerateToken(user.Email) });
+            var refreshToken = await _refreshTokenService.CreateToken(user);
+            PutRefreshToken(refreshToken);
+            var token = _jwtTokenGenerator.GenerateToken(user.Email);
+            return Ok(new JwtTokenResponse
+            {
+                Expires = DateTime.UtcNow.AddMinutes(_jwtTokenGenerator.TokenLifetimeMinutes),
+                Token = token
+            });
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login(AuthenticationRequest authenticationRequest)
@@ -53,29 +58,26 @@ namespace FoodDiaryWebApi.Controllers
                 return NotFound(new { ErrorMessage = "User with this email not found!" });
             if (!BCrypt.Net.BCrypt.EnhancedVerify(authenticationRequest.Password, user.PasswordHash))
                 return BadRequest(new { ErrorMessage = "Provided invalid password!" });
-            var session = _refreshTokenService.CreateSession(user);
-            PutRefreshToken(session.Item2);
-            PutSessionId(session.Item1);
-            await _db.SaveChangesAsync();
-            return Ok(new { Token = _jwtTokenGenerator.GenerateToken(user.Email) });
+            var refreshToken = await _refreshTokenService.CreateToken(user);
+            PutRefreshToken(refreshToken);
+            return Ok(CreateTokenResponse(user.Email));
         }
         [HttpGet("refresh")]
         public async Task<IActionResult> Refresh()
         {
-            var providedRefreshToken = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == CookieNames.RefreshToken).Value;
+            var providedRefreshToken = GetRefreshFromCookie();
             if (providedRefreshToken is null)
                 return BadRequest(new { ErrorMessage = "Refresh token not provided!" });
-            var providedSessionId = GetSessionFromCookie();
-            if (providedSessionId is null)
-                return BadRequest(new { ErrorMessage = "Session id not provided!" });
-            var tokensPair = await _refreshTokenService.GetTokenAndRefresh(Guid.Parse(providedSessionId));
-            if (tokensPair is null)
-                return BadRequest(new { ErrorMessage = "Invalid session id provided!" });
-            if (providedRefreshToken != tokensPair.Item1)
+            var newRefreshToken = await _refreshTokenService.UpdateToken(providedRefreshToken);
+            if (newRefreshToken is null)
                 return BadRequest(new { ErrorMessage = "Invalid refresh token provided!" });
-            PutRefreshToken(tokensPair.Item2);
-            var userEmail = _db.RefreshTokens.AsNoTracking().Include(t => t.Owner).First(t => t.SessionId == Guid.Parse(providedSessionId)).Owner.Email;
-            return Ok(new { Token = _jwtTokenGenerator.GenerateToken(userEmail) });
+            PutRefreshToken(newRefreshToken);
+            var userEmail = _db.RefreshTokens
+                .AsNoTracking()
+                .Include(t => t.Owner)
+                .First(t => t.Value == newRefreshToken)
+                .Owner.Email;
+            return Ok(CreateTokenResponse(userEmail));
         }
         [HttpPost("request_recovery")]
         public IActionResult RequestRecovery(RecoveryRequest request)
@@ -96,12 +98,16 @@ namespace FoodDiaryWebApi.Controllers
             await _db.SaveChangesAsync();
             return NoContent();
         }
-        private void PutSessionId(Guid sessionId)
-        {
-            HttpContext.Response.Cookies.Append(CookieNames.Session, sessionId.ToString(), new CookieOptions() { HttpOnly = true });
-        }
         private void PutRefreshToken(string token) =>
             HttpContext.Response.Cookies.Append(CookieNames.RefreshToken, token, new CookieOptions() { HttpOnly = true });
-        private string? GetSessionFromCookie() => HttpContext.Request.Cookies[CookieNames.Session];
+        private string? GetRefreshFromCookie() => HttpContext.Request.Cookies[CookieNames.RefreshToken];
+        private JwtTokenResponse CreateTokenResponse(string email)
+        {
+            return new JwtTokenResponse()
+            {
+                Token = _jwtTokenGenerator.GenerateToken(email),
+                Expires = DateTime.UtcNow.AddMinutes(_jwtTokenGenerator.TokenLifetimeMinutes),
+            };
+        }
     }
 }

@@ -12,16 +12,18 @@ namespace FoodDiaryWebApi.Services.Implementations
     {
         private readonly SigningCredentials _signingCredentials;
         private readonly IOptions<JwtConfiguration> _options;
+        public int TokenLifetimeMinutes {  get; private set; }
 
         public JwtTokenGenerator(IOptions<JwtConfiguration> options)
         {
             _signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.SecurityKey)), SecurityAlgorithms.HmacSha256);
             _options = options;
+            TokenLifetimeMinutes = options.Value.ExpiresMinutes;
         }
         public string GenerateToken(string email)
         {
             var token = new JwtSecurityToken(signingCredentials: _signingCredentials,
-                expires: DateTime.UtcNow.AddHours(_options.Value.ExpiresHours),
+                expires: DateTime.UtcNow.AddMinutes(_options.Value.ExpiresMinutes),
                 claims: [new Claim(ClaimTypes.Email, email)]);
             return new JwtSecurityTokenHandler().WriteToken(token);
         }

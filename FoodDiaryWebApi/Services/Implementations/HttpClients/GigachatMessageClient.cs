@@ -24,12 +24,10 @@ namespace FoodDiaryWebApi.Services.Implementations.HttpClients
         }}";
         private readonly HttpClient _httpClient;
         private readonly string _model;
-        private readonly ILogger<GigachatMessageClient> _logger;
-        public GigachatMessageClient(HttpClient client, IOptions<GigachatConfiguration> options, ILogger<GigachatMessageClient> logger)
+        public GigachatMessageClient(HttpClient client, IOptions<GigachatConfiguration> options)
         {
             _httpClient = client;
             _model = options.Value.Model;
-            _logger = logger;
         }
         public async Task<int> GetCaloriesForDishes(string dishes)
         {
@@ -49,6 +47,7 @@ namespace FoodDiaryWebApi.Services.Implementations.HttpClients
         }
         private int parseResponseText(string responseText)
         {
+            // 35 is the index of the beginning of the line "context" in response json
             var content = responseText.Skip(35).TakeWhile(c => c != '"' && c != ' ').ToArray();
             return int.Parse(content);
         }

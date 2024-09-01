@@ -27,6 +27,8 @@ namespace FoodDiaryWebApi.Controllers
             var notes = _db.Notes.AsNoTracking()
                 .Include(n => n.Entries)
                 .Where(n => n.AuthorId == user.Id)
+                .Skip(pageSize * (page - 1))
+                .Take(pageSize)
                 .ToList();
             return Ok(notes.Select(NoteResponse.MapFromEntity));
         }

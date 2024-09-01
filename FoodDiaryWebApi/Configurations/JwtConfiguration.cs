@@ -3,6 +3,6 @@
     public class JwtConfiguration
     {
         public string SecurityKey { get; set; }
-        public int ExpiresHours { get; set; }
+        public int ExpiresMinutes { get; set; }
     }
 }

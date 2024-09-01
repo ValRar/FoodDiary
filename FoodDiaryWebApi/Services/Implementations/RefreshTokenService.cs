@@ -12,35 +12,39 @@ namespace FoodDiaryWebApi.Services.Implementations
             _dbContext = dbContext;
         }
 
-        public async Task<Tuple<string, string>?> GetTokenAndRefresh(Guid sessionId)
+        public async Task<string?> UpdateToken(string providedRefreshToken)
         {
-            var token = _dbContext.RefreshTokens.FirstOrDefault(t => t.SessionId == sessionId);
-            if (token == null)
+            var token = _dbContext.RefreshTokens
+                .FirstOrDefault(t => t.Value == providedRefreshToken);
+            if (token is null)
                 return null;
-            if (token?.Expires < DateTime.UtcNow)
+            if (token.Expires < DateTime.UtcNow)
             {
                 _dbContext.RefreshTokens.Remove(token);
                 await _dbContext.SaveChangesAsync();
                 return null;
             }
-            var oldToken = token.Value;
-            token.Expires = DateTime.UtcNow.AddDays(30);
             token.Value = GenerateRefreshToken();
+            token.Expires = DateTime.UtcNow.AddDays(30);
             await _dbContext.SaveChangesAsync();
-            return new(oldToken, token.Value);
+            return token.Value;
         }
 
-        public Tuple<Guid, string> CreateSession(UserEntity user)
+        public async Task<string> CreateToken(UserEntity user)
         {
-            var sessionId = Guid.NewGuid();
             var tokenValue = GenerateRefreshToken();
-            user.RefreshTokens.Add(new RefreshTokenEntity { SessionId = sessionId, Expires = DateTime.UtcNow.AddDays(30), Value = tokenValue });
-            return new(sessionId, tokenValue);
+            user.RefreshTokens.Add(new RefreshTokenEntity
+            {
+                Value = tokenValue,
+                Expires = DateTime.UtcNow.AddDays(30),
+            });
+            await _dbContext.SaveChangesAsync();
+            return tokenValue;
         }
-        public async void RemoveSession(Guid sessionId)
+        public async void RemoveToken(string refreshToken)
         {
-            var token = _dbContext.RefreshTokens.FirstOrDefault(t => t.SessionId == sessionId);
-            if (token == null)
+            var token = _dbContext.RefreshTokens.FirstOrDefault(t => t.Value == refreshToken);
+            if (token is null)
                 return;
             _dbContext.Remove(token);
             await _dbContext.SaveChangesAsync();

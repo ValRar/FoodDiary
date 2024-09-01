@@ -21,7 +21,7 @@ namespace FoodDiaryWebApi.Services.Implementations
                 {
                     var response = await _client.SendRequest();
                     GigachatJWTStorage.Token = response.AccessToken;
-                    await Task.Delay(CalculateDelayTo(response.ExpiresAt), stoppingToken);
+                    await Task.Delay(CalculateDelayTo(response.ExpiresAt) - 10_000, stoppingToken);
                 } catch (HttpRequestException e)
                 {
                     _logger.LogError(e, "Error occured while obtaining Gigachat JWT token.");

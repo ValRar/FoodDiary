@@ -1,0 +1,21 @@
+services:
+  backend:
+    build: .
+    environment:
+      - ASPNET_ENVIRONMENT=Development
+      - ConnectionStrings__postgres=Server=db;Port=5432;Database=Diary;User Id=postgres;Password=5936;
+      # - AllowedHost: ""
+    ports:
+      - 8080:8080 
+    depends_on:
+      - db
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=5936
+      - POSTGRES_DB=Diary
+    volumes:
+      - ./initDb:/docker-entrypoint-initdb.d
+      - /var/lib/postgres:/var/lib/postgresql
+    expose:
+      - 5432:5432

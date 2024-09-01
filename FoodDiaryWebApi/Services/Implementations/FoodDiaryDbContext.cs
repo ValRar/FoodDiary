@@ -30,12 +30,16 @@ namespace FoodDiaryWebApi.Services.Implementations
                 builder.HasKey(x => x.Id);
                 builder.HasMany(x => x.Entries);
             });
+            modelBuilder.Entity<NoteEntryEntity>(builder =>
+            {
+                builder.ToTable("NoteEntries");
+                builder.HasKey(x => x.Id);
+            });
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql(_config.GetConnectionString("postgres"));
             optionsBuilder.EnableSensitiveDataLogging();
-            optionsBuilder.LogTo(s => System.Diagnostics.Debug.WriteLine(s));
         }
     }
 }
