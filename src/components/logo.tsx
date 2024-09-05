@@ -1,6 +1,6 @@
 import React from "react";
 import { Pacifico } from "next/font/google";
-import LightBackgroundFiller from "./lightBackgroundFiller";
+import LightBackgroundFiller from "./LightBackgroundFiller";
 import Image from "next/image";
 
 const pacifico = Pacifico({
