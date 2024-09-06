@@ -2,6 +2,7 @@ import Button from "@/components/Button";
 import Logo from "@/components/Logo";
 import NoteCard from "@/components/NoteCard";
 import { Pacifico } from "next/font/google";
+import Link from "next/link";
 
 const pacifico = Pacifico({
 	weight: "400",
@@ -30,15 +31,19 @@ export default function Home() {
 							{ dish: "Расчёт калорий и блюд при помощи ИИ", id: 3 },
 						],
 					}}
-					disabled={false}
+					disabled={true}
 				></NoteCard>
 				<nav className="py-8 flex justify-center">
-					<Button className="mx-3 grow">
-						<span className="text-3xl">Вход</span>
-					</Button>
-					<Button className="shrink">
-						<span className="text-3xl">Регистрация</span>
-					</Button>
+					<Link href="/login">
+						<Button className="mx-3 grow">
+							<span className="text-3xl">Вход</span>
+						</Button>
+					</Link>
+					<Link href="/register">
+						<Button className="shrink">
+							<span className="text-3xl">Регистрация</span>
+						</Button>
+					</Link>
 				</nav>
 			</section>
 		</main>

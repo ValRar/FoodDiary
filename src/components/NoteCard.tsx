@@ -45,11 +45,11 @@ export default function NoteCard({
 					))}
 				</div>
 				<div className="mx-2">
-					<TextButton disabled={true}>
+					<TextButton disabled={disabled}>
 						<span className="text-xl font-bold">Изменить</span>
 					</TextButton>
 					<span className="font-light"> | </span>
-					<TextButton disabled={true}>
+					<TextButton disabled={disabled}>
 						<span className="text-xl font-bold">Удалить</span>
 					</TextButton>
 				</div>

@@ -3,8 +3,21 @@ import styles from "../css/backgroundFiller.module.css";
 
 export default function BackgroundFiller({
 	children,
+	className,
 }: {
 	children: React.ReactElement[] | React.ReactElement;
+	className?: string;
 }) {
-	return <div className={styles.filler + " " + styles["filler-regular"]}>{children}</div>;
+	return (
+		<div
+			className={
+				styles.filler +
+				" " +
+				styles["filler-regular"] +
+				(className ? " " + className : "")
+			}
+		>
+			{children}
+		</div>
+	);
 }
