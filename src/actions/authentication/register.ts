@@ -1,7 +1,10 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { parseCookie } from "next/dist/compiled/@edge-runtime/cookies";
+import TokenResponse from "@/interfaces/TokenResponse";
+import { cookies } from "next/headers";
+import { cookieSettings, JWT_NAME, REFRESH_TOKEN_NAME } from "../constants";
 
 const baseUrl = process.env.BACKEND_BASE_URL;
 
@@ -18,11 +21,18 @@ export default async function register(prevState: any, data: FormData) {
 		if (!request.ok) {
 			return { message: "Пользователь с таким email уже существует." };
 		}
-		const response: { token: string; expires: string } = await request.json();
-		cookies().set("token", response.token, {
-			httpOnly: true,
-			expires: new Date(Date.parse(response.expires)),
-		});
+		const response: TokenResponse = await request.json();
+		const refreshToken = request.headers
+			.getSetCookie()
+			.map(parseCookie)
+			.find((c) => c.has("refresh_token"))
+			?.get("refresh_token");
+		cookies().set(
+			JWT_NAME,
+			response.token,
+			cookieSettings(new Date(response.expires))
+		);
+		cookies().set(REFRESH_TOKEN_NAME, refreshToken!, cookieSettings());
 		redirect("/home");
 	} else {
 		return { message: "Введите все необходимые данные." };

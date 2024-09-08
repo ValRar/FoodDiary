@@ -4,7 +4,7 @@ import React from "react";
 import LightBackgroundFiller from "./LightBackgroundFiller";
 import Button from "./Button";
 import { useFormState } from "react-dom";
-import login from "@/data/login";
+import login from "@/actions/authentication/login";
 
 const initialState = {
 	message: "",

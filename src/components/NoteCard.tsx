@@ -1,16 +1,17 @@
 import React from "react";
 import BackgroundFiller from "./BackgroundFiller";
 import Image from "next/image";
-import Note from "@/interfaces/Note";
+import { Note } from "@/interfaces/Note";
 import TextButton from "./TextButton";
+import Link from "next/link";
 
 export default function NoteCard({
 	note,
-	disabled,
+	disabled = false,
 	className,
 }: {
 	note: Note;
-	disabled: boolean;
+	disabled?: boolean;
 	className?: string;
 }) {
 	function displayDate(date: Date): string {
@@ -45,9 +46,12 @@ export default function NoteCard({
 					))}
 				</div>
 				<div className="mx-2">
-					<TextButton disabled={disabled}>
-						<span className="text-xl font-bold">Изменить</span>
-					</TextButton>
+					<Link href={`/note/${note.id}/edit`}>
+						<TextButton disabled={disabled}>
+							<span className="text-xl font-bold">Изменить</span>
+						</TextButton>
+					</Link>
+
 					<span className="font-light"> | </span>
 					<TextButton disabled={disabled}>
 						<span className="text-xl font-bold">Удалить</span>
