@@ -4,7 +4,12 @@ import { redirect } from "next/navigation";
 import { parseCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import TokenResponse from "@/interfaces/TokenResponse";
 import { cookies } from "next/headers";
-import { cookieSettings, JWT_NAME, REFRESH_TOKEN_NAME } from "../constants";
+import {
+	cookieSettings,
+	DISPLAY_NAME_COOKIE_NAME,
+	JWT_NAME,
+	REFRESH_TOKEN_NAME,
+} from "../constants";
 
 const baseUrl = process.env.BACKEND_BASE_URL;
 
@@ -33,6 +38,7 @@ export default async function register(prevState: any, data: FormData) {
 			cookieSettings(new Date(response.expires))
 		);
 		cookies().set(REFRESH_TOKEN_NAME, refreshToken!, cookieSettings());
+		cookies().set(DISPLAY_NAME_COOKIE_NAME, email.toString());
 		redirect("/home");
 	} else {
 		return { message: "Введите все необходимые данные." };

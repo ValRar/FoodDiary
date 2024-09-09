@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import {
 	BASE_URL,
 	cookieSettings,
+	DISPLAY_NAME_COOKIE_NAME,
 	JWT_NAME,
 	REFRESH_TOKEN_NAME,
 } from "../constants";
@@ -36,6 +37,7 @@ export default async function login(prevState: any, data: FormData) {
 			cookieSettings(new Date(response.expires))
 		);
 		cookies().set(REFRESH_TOKEN_NAME, refreshToken!, cookieSettings());
+		cookies().set(DISPLAY_NAME_COOKIE_NAME, email.toString());
 		redirect("/home");
 	} else {
 		return { message: "Введите все необходимые данные." };

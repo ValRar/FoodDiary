@@ -1,8 +1,11 @@
+import { REFRESH_TOKEN_NAME } from "@/actions/constants";
 import Button from "@/components/Button";
 import Logo from "@/components/Logo";
 import NoteCard from "@/components/NoteCard";
 import { Pacifico } from "next/font/google";
+import { cookies } from "next/headers";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 const pacifico = Pacifico({
 	weight: "400",
@@ -11,6 +14,7 @@ const pacifico = Pacifico({
 });
 
 export default function Home() {
+	if (cookies().has(REFRESH_TOKEN_NAME)) redirect("/home");
 	return (
 		<main className="flex min-h-screen flex-col items-center justify-start p-4 px-96">
 			<Logo />
