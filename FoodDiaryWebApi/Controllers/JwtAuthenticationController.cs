@@ -6,7 +6,6 @@ using FoodDiaryWebApi.Services.Implementations;
 using FoodDiaryWebApi.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Common;
 
 namespace FoodDiaryWebApi.Controllers
 {
@@ -70,7 +69,7 @@ namespace FoodDiaryWebApi.Controllers
                 return BadRequest(new { ErrorMessage = "Refresh token not provided!" });
             var newRefreshToken = await _refreshTokenService.UpdateToken(providedRefreshToken);
             if (newRefreshToken is null)
-                return BadRequest(new { ErrorMessage = "Invalid refresh token provided!" });
+                return Forbid();
             PutRefreshToken(newRefreshToken);
             var userEmail = _db.RefreshTokens
                 .AsNoTracking()
@@ -99,7 +98,7 @@ namespace FoodDiaryWebApi.Controllers
             return NoContent();
         }
         private void PutRefreshToken(string token) =>
-            HttpContext.Response.Cookies.Append(CookieNames.RefreshToken, token, new CookieOptions() { HttpOnly = true });
+            HttpContext.Response.Cookies.Append(CookieNames.RefreshToken, token);
         private string? GetRefreshFromCookie() => HttpContext.Request.Cookies[CookieNames.RefreshToken];
         private JwtTokenResponse CreateTokenResponse(string email)
         {

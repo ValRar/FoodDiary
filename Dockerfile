@@ -20,6 +20,5 @@ WORKDIR /app
 COPY --from=build /out ./
 COPY certificates/ /usr/local/share/ca-certificates/
 RUN update-ca-certificates -v
-WORKDIR /app
 EXPOSE 8080
 ENTRYPOINT ["dotnet", "FoodDiaryWebApi.dll"]

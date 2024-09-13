@@ -31,7 +31,7 @@ namespace FoodDiaryWebApi.Services.Implementations
         }
         private static int CalculateDelayTo(long unixTimeMs)
         {
-            long currentUnixTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            long currentUnixTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             return (int) (unixTimeMs - currentUnixTime);
         }
     }

@@ -37,6 +37,11 @@ builder.Services.AddHttpClient<GigachatMessageClient>();
 
 builder.Services.AddDbContext<FoodDiaryDbContext>();
 
+builder.Services.AddCookiePolicy(options =>
+{
+    options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
+    options.Secure = CookieSecurePolicy.Always;
+});
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(options =>
@@ -75,6 +80,7 @@ if (app.Environment.IsDevelopment())
     app.UseCors();
 }
 
+app.UseCookiePolicy();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

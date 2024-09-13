@@ -20,20 +20,33 @@ namespace FoodDiaryWebApi.Controllers
         {
             _db = context;
         }
-        [HttpGet("get")]
-        public ActionResult<NoteResponse> GetNotes(int page, int pageSize)
+        [HttpGet("get_page")]
+        public ActionResult<IEnumerable<NoteResponse>> GetNotesPage(int page, int pageSize)
         {
             var user = GetUser();
             var notes = _db.Notes.AsNoTracking()
                 .Include(n => n.Entries)
                 .Where(n => n.AuthorId == user.Id)
+                .OrderByDescending(n => n.CreationTime)
                 .Skip(pageSize * (page - 1))
                 .Take(pageSize)
                 .ToList();
             return Ok(notes.Select(NoteResponse.MapFromEntity));
         }
+        [HttpGet("{id:}")]
+        public ActionResult<NoteResponse> GetNote(int id)
+        {
+            var user = GetUser();
+            var note = _db.Notes.AsNoTracking()
+                .Include(n => n.Entries)
+                .Where(n => n.Id == id && n.AuthorId == user.Id)
+                .FirstOrDefault();
+            if (note is null)
+                return Forbid();
+            return Ok(NoteResponse.MapFromEntity(note));
+        }
         [HttpPost]
-        public async Task<IActionResult> AddNote(NoteAddRequest request)
+        public async Task<ActionResult<NoteResponse>> AddNote(NoteAddRequest request)
         {
             var user = GetUser();
             var noteEntity = new NoteEntity
