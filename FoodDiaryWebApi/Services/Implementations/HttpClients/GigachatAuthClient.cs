@@ -7,19 +7,15 @@ namespace FoodDiaryWebApi.Services.Implementations.HttpClients
     public class GigachatAuthClient
     {
         private readonly HttpClient _httpClient;
-        private readonly HttpRequestMessage _basicRequest;
+        private GigachatConfiguration _configuration;
         public GigachatAuthClient(HttpClient client, IOptions<GigachatConfiguration> options)
         {
             _httpClient = client;
-            _basicRequest = new HttpRequestMessage(HttpMethod.Post, "https://ngw.devices.sberbank.ru:9443/api/v2/oauth");
-            _basicRequest.Headers.Add("Authorization", $"Basic {options.Value.Credentials}");
-            var defaultBody = new FormUrlEncodedContent([new KeyValuePair<string, string>("scope", options.Value.Scope)]);
-            _basicRequest.Content = defaultBody;
+            _configuration = options.Value;
         }
         public async Task<GigachatAuthenticationResponse> SendRequest()
         {
-            _basicRequest.Headers.Add("RqUID", Guid.NewGuid().ToString());
-            var response = await _httpClient.SendAsync(_basicRequest);
+            var response = await _httpClient.SendAsync(CreateMessage());
             response.EnsureSuccessStatusCode();
             var parsedResponse = await response.Content.ReadFromJsonAsync<GigachatAuthenticationResponse>();
             if (parsedResponse is null)
@@ -27,6 +23,15 @@ namespace FoodDiaryWebApi.Services.Implementations.HttpClients
                 throw new ArgumentNullException($"{nameof(parsedResponse)}");
             }
             return parsedResponse;
+        }
+        private HttpRequestMessage CreateMessage()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://ngw.devices.sberbank.ru:9443/api/v2/oauth");
+            request.Headers.Add("Authorization", $"Basic {_configuration.Credentials}");
+            var defaultBody = new FormUrlEncodedContent([new KeyValuePair<string, string>("scope", _configuration.Scope)]);
+            request.Content = defaultBody;
+            request.Headers.Add("RqUID", Guid.NewGuid().ToString());
+            return request;
         }
     }
 }

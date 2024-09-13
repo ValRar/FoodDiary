@@ -21,7 +21,7 @@ namespace FoodDiaryWebApi.Services.Implementations
                 {
                     var response = await _client.SendRequest();
                     GigachatJWTStorage.Token = response.AccessToken;
-                    await Task.Delay(CalculateDelayTo(response.ExpiresAt) - 10_000, stoppingToken);
+                    await Task.Delay(CalculateDelayTo(response.ExpiresAt) - TimeSpan.FromSeconds(10), stoppingToken);
                 } catch (HttpRequestException e)
                 {
                     _logger.LogError(e, "Error occured while obtaining Gigachat JWT token.");
@@ -29,10 +29,10 @@ namespace FoodDiaryWebApi.Services.Implementations
                 }
             }
         }
-        private static int CalculateDelayTo(long unixTimeMs)
+        private static TimeSpan CalculateDelayTo(long unixTimeMs)
         {
             long currentUnixTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            return (int) (unixTimeMs - currentUnixTime);
+            return TimeSpan.FromMilliseconds(unixTimeMs - currentUnixTime);
         }
     }
 }

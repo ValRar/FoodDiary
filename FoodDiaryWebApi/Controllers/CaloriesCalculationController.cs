@@ -1,12 +1,13 @@
 ﻿using FoodDiaryWebApi.Data.Responses;
 using FoodDiaryWebApi.Services.Implementations.HttpClients;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FoodDiaryWebApi.Controllers
 {
     [Route("calories")]
     [ApiController]
+    [Authorize]
     public class CaloriesCalculationController : ControllerBase
     {
         private readonly GigachatMessageClient _gigachatClient;
