@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 import React from "react";
 import LightBackgroundFiller from "@/components/LightBackgroundFiller";
 import LogoutButton from "@/components/LogoutButton";
+import NoteCreatingForm from "@/components/NoteCreatingForm";
 
 export default async function HomePage() {
 	if (!cookies().has(REFRESH_TOKEN_NAME)) return redirect("/");
@@ -28,7 +29,8 @@ export default async function HomePage() {
 				)}
 				<LogoutButton></LogoutButton>
 			</div>
-			<div className="mx-96 mt-4">
+			<div className="mx-96 mt-4 min-h-screen">
+				<NoteCreatingForm></NoteCreatingForm>
 				<NotesView notes={notes}></NotesView>
 			</div>
 		</>

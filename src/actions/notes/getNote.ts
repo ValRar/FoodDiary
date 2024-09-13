@@ -1,4 +1,4 @@
-import NoteResponse from "@/interfaces/Note";
+import { NoteResponse } from "@/interfaces/Note";
 import { BASE_URL, JWT_NAME } from "../constants";
 import { cookies } from "next/headers";
 

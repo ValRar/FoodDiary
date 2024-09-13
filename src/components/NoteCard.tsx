@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Note } from "@/interfaces/Note";
 import TextButton from "./TextButton";
 import Link from "next/link";
+import { displayDate } from "./utilities";
 
 export default function NoteCard({
 	note,
@@ -14,14 +15,6 @@ export default function NoteCard({
 	disabled?: boolean;
 	className?: string;
 }) {
-	function displayDate(date: Date): string {
-		let minutes = date.getMinutes().toString();
-		minutes = minutes.length == 2 ? minutes : "0" + minutes;
-		let hours = date.getHours().toString();
-		hours = hours.length == 2 ? hours : "0" + hours;
-		return hours + ":" + minutes;
-	}
-
 	return (
 		<div className={className}>
 			<BackgroundFiller>

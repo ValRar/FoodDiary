@@ -11,7 +11,7 @@ import DayHeader from "./DayHeader";
 function groupNotes(notes: Note[]): GroupedNotes[] {
 	const groupedNotes: GroupedNotes[] = [];
 	for (let i = 0; i < notes.length; i++) {
-		let group = groupedNotes.find(
+		let group = groupedNotes.findLast(
 			(g) =>
 				g.dayOfMonth === notes[i].creationTime.getDate() &&
 				g.year === notes[i].creationTime.getFullYear() &&
@@ -60,7 +60,7 @@ export default function NotesView({ notes }: { notes: Note[] }) {
 		<>
 			<section>
 				{groupNotes(notesArr).map((g) => (
-					<>
+					<div key={calculateKey(g.year, g.month, g.dayOfMonth)}>
 						<DayHeader
 							dayOfMonth={g.dayOfMonth}
 							dayOfWeek={g.dayOfWeek}
@@ -72,7 +72,7 @@ export default function NotesView({ notes }: { notes: Note[] }) {
 						{g.notes.map((n) => (
 							<NoteCard note={n} key={n.id} className="my-5"></NoteCard>
 						))}
-					</>
+					</div>
 				))}
 			</section>
 			<label ref={ref}></label>

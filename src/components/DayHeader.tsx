@@ -44,12 +44,12 @@ export default function DayHeader({
 	caloriesSum: number;
 }) {
 	return (
-		<div>
-			<span className="font-bold text-3xl">{`${dayToString(
-				dayOfWeek
-			)}, ${monthToString(month)} ${dayOfMonth}, ${year}`}</span>
-			<span className="text-3xl"> | </span>
-			<span className="text-3xl">{`${caloriesSum} ккал`}</span>
-		</div>
+		<h1 className="text-3xl">
+			<span className="font-bold">{`${dayToString(dayOfWeek)}, ${monthToString(
+				month
+			)} ${dayOfMonth}, ${year}`}</span>
+			<span> | </span>
+			<span>{`${caloriesSum} ккал`}</span>
+		</h1>
 	);
 }
