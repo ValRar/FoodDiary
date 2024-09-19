@@ -6,6 +6,7 @@ using FoodDiaryWebApi.Services.Implementations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace FoodDiaryWebApi.Controllers
@@ -22,17 +23,20 @@ namespace FoodDiaryWebApi.Controllers
             _db = context;
         }
         [HttpGet("get_page")]
-        public ActionResult<IEnumerable<NoteResponse>> GetNotesPage(int minimum_length, DateOnly start_day)
+        public ActionResult<IEnumerable<NoteResponse>> GetNotesPage([Required] int minimum_length, [Required] DateOnly start_day)
         {
+            var startDateTime = start_day.ToDateTime(TimeOnly.MaxValue).ToUniversalTime(); 
             var user = GetUser();
-            var notes = _db.Notes.AsNoTracking().Where(n => n.AuthorId == user.Id && DateOnly.FromDateTime(n.CreationTime) <= start_day).OrderByDescending(n => n.CreationTime);
-            IEnumerable<NoteEntity> minimumNotes = notes.Take(minimum_length).ToArray();
+            var notes = _db.Notes.AsNoTracking().Where(n => n.AuthorId == user.Id && n.CreationTime <= startDateTime)
+                .OrderByDescending(n => n.CreationTime).ToList();
+            var minimumNotes = notes.Take(minimum_length).ToArray();
             if (minimumNotes.Count() >= minimum_length)
             {
-                minimumNotes = minimumNotes.Concat(notes
+                minimumNotes = minimumNotes.Concat(
+                    notes
                     .Skip(minimumNotes.Count())
                     .TakeWhile(n => n.CreationTime.DayOfYear == minimumNotes.Last().CreationTime.DayOfYear)
-                    );
+                    ).ToArray();
             }
             return Ok(minimumNotes.Select(NoteResponse.MapFromEntity));
         }
