@@ -3,24 +3,34 @@
 @tailwind utilities;
 
 :root {
-	--background: #f4fbf4;
-	--text: #0c170c;
+  --background: #f4fbf4;
+  --text: #0c170c;
 }
 
 body {
-	background-color: var(--background);
-	color: var(--text);
+  background-color: var(--background);
+  color: var(--text);
 }
 
 @layer utilities {
-	.text-balance {
-		text-wrap: balance;
-	}
+  .text-balance {
+    text-wrap: balance;
+  }
 }
 
 .input[contenteditable="true"]:empty:before {
-	content: attr(placeholder);
-	color: #555;
-	pointer-events: none;
-	display: block;
+  content: attr(placeholder);
+  color: #555;
+  pointer-events: none;
+  display: block;
+}
+.interactive-button {
+  @apply transition-transform;
+  @apply duration-75;
+}
+.interactive-button:hover {
+  @apply scale-105;
+}
+.interactive-button:active {
+  @apply scale-95;
 }
