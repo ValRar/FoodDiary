@@ -1,6 +1,7 @@
 ﻿using FoodDiaryWebApi.Data.Entities;
 using FoodDiaryWebApi.Data.Requests;
 using FoodDiaryWebApi.Data.Responses;
+using FoodDiaryWebApi.Services;
 using FoodDiaryWebApi.Services.Implementations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,24 +22,19 @@ namespace FoodDiaryWebApi.Controllers
             _db = context;
         }
         [HttpGet("get_page")]
-        public ActionResult<IEnumerable<NoteResponse>> GetNotesPage(int page, int pageSize)
+        public ActionResult<IEnumerable<NoteResponse>> GetNotesPage(int minimum_length, DateOnly start_day)
         {
             var user = GetUser();
-            var notes = _db.Notes.AsNoTracking()
-                .Include(n => n.Entries)
-                .Where(n => n.AuthorId == user.Id)
-                .OrderByDescending(n => n.CreationTime)
-                .Skip(pageSize * (page - 1))
-                .Take(pageSize)
-                .ToList();
-            // Loading the remaining entries from the last day
-            var remainingNotes = _db.Notes.AsNoTracking()
-                .Include(n => n.Entries)
-                .Where(n => n.CreationTime < notes.Last().CreationTime &&
-                    n.CreationTime.DayOfYear == notes.Last().CreationTime.DayOfYear &&
-                    n.CreationTime.Year == notes.Last().CreationTime.Year)
-                .ToList();
-            return Ok(notes.Concat(remainingNotes).Select(NoteResponse.MapFromEntity));
+            var notes = _db.Notes.AsNoTracking().Where(n => n.AuthorId == user.Id && DateOnly.FromDateTime(n.CreationTime) <= start_day).OrderByDescending(n => n.CreationTime);
+            IEnumerable<NoteEntity> minimumNotes = notes.Take(minimum_length).ToArray();
+            if (minimumNotes.Count() >= minimum_length)
+            {
+                minimumNotes = minimumNotes.Concat(notes
+                    .Skip(minimumNotes.Count())
+                    .TakeWhile(n => n.CreationTime.DayOfYear == minimumNotes.Last().CreationTime.DayOfYear)
+                    );
+            }
+            return Ok(minimumNotes.Select(NoteResponse.MapFromEntity));
         }
         [HttpGet("{id:int}")]
         public ActionResult<NoteResponse> GetNote(int id)
