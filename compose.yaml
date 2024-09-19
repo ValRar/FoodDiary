@@ -2,7 +2,7 @@ services:
   backend:
     build: .
     environment:
-      - ASPNET_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__postgres=Server=db;Port=5432;Database=Diary;User Id=postgres;Password=5936;
       - AllowedHost=http://localhost:3000
     ports:

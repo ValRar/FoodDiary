@@ -1,4 +1,5 @@
 ﻿using FoodDiaryWebApi.Data.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace FoodDiaryWebApi.Data.DTO
 {
@@ -14,7 +15,9 @@ namespace FoodDiaryWebApi.Data.DTO
             };
         }
         public long Id { get; set; }
+        [Required]
         public string Dish { get; set; }
+        [Range(0, int.MaxValue)]
         public int? Calories { get; set; }
     }
 }

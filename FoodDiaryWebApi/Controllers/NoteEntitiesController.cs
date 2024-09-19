@@ -31,9 +31,16 @@ namespace FoodDiaryWebApi.Controllers
                 .Skip(pageSize * (page - 1))
                 .Take(pageSize)
                 .ToList();
-            return Ok(notes.Select(NoteResponse.MapFromEntity));
+            // Loading the remaining entries from the last day
+            var remainingNotes = _db.Notes.AsNoTracking()
+                .Include(n => n.Entries)
+                .Where(n => n.CreationTime < notes.Last().CreationTime &&
+                    n.CreationTime.DayOfYear == notes.Last().CreationTime.DayOfYear &&
+                    n.CreationTime.Year == notes.Last().CreationTime.Year)
+                .ToList();
+            return Ok(notes.Concat(remainingNotes).Select(NoteResponse.MapFromEntity));
         }
-        [HttpGet("{id:}")]
+        [HttpGet("{id:int}")]
         public ActionResult<NoteResponse> GetNote(int id)
         {
             var user = GetUser();
