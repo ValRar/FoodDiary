@@ -27,7 +27,9 @@ namespace FoodDiaryWebApi.Controllers
         {
             var startDateTime = start_day.ToDateTime(TimeOnly.MaxValue).ToUniversalTime(); 
             var user = GetUser();
-            var notes = _db.Notes.AsNoTracking().Where(n => n.AuthorId == user.Id && n.CreationTime <= startDateTime)
+            var notes = _db.Notes.AsNoTracking()
+                .Include(n => n.Entries)
+                .Where(n => n.AuthorId == user.Id && n.CreationTime <= startDateTime)
                 .OrderByDescending(n => n.CreationTime).ToList();
             var minimumNotes = notes.Take(minimum_length).ToArray();
             if (minimumNotes.Count() >= minimum_length)
