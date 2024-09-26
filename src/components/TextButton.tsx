@@ -23,7 +23,7 @@ export default function TextButton({
       onClick={disabled ? undefined : onClick}
     >
       {children}
-      <div className={styles.underline}></div>
+      <div className={"dark:!bg-green-dark-text " + styles.underline}></div>
     </button>
   );
 }

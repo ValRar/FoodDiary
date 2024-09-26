@@ -53,43 +53,41 @@ export default function NotesView({
 }) {
   const [changingNoteId, setChangingNoteId] = useState<number | undefined>();
   return (
-    <>
-      <section>
-        {groupNotes(notes).map((g) => (
-          <div key={calculateKey(g.year, g.month, g.dayOfMonth)}>
-            <DayHeader
-              dayOfMonth={g.dayOfMonth}
-              dayOfWeek={g.dayOfWeek}
-              month={g.month}
-              year={g.year}
-              caloriesSum={g.caloriesSum}
-              key={calculateKey(g.year, g.month, g.dayOfMonth)}
-            ></DayHeader>
-            <section>
-              {g.notes.map((n) =>
-                n.id !== changingNoteId ? (
-                  <NoteCard
-                    note={n}
-                    key={n.id}
-                    onClickDelete={onDelete}
-                    onClickUpdate={setChangingNoteId}
-                    className="my-5"
-                  ></NoteCard>
-                ) : (
-                  <NoteCreatingForm
-                    initialValue={n}
-                    onSubmit={(entries) => {
-                      onUpdate(n.id, entries);
-                      setChangingNoteId(undefined);
-                    }}
-                    key={n.id}
-                  ></NoteCreatingForm>
-                )
-              )}
-            </section>
-          </div>
-        ))}
-      </section>
-    </>
+    <section className="my-2">
+      {groupNotes(notes).map((g) => (
+        <div key={calculateKey(g.year, g.month, g.dayOfMonth)}>
+          <DayHeader
+            dayOfMonth={g.dayOfMonth}
+            dayOfWeek={g.dayOfWeek}
+            month={g.month}
+            year={g.year}
+            caloriesSum={g.caloriesSum}
+            key={calculateKey(g.year, g.month, g.dayOfMonth)}
+          ></DayHeader>
+          <section>
+            {g.notes.map((n) =>
+              n.id !== changingNoteId ? (
+                <NoteCard
+                  note={n}
+                  key={n.id}
+                  onClickDelete={onDelete}
+                  onClickUpdate={setChangingNoteId}
+                  className="my-5"
+                ></NoteCard>
+              ) : (
+                <NoteCreatingForm
+                  initialValue={n}
+                  onSubmit={(entries) => {
+                    onUpdate(n.id, entries);
+                    setChangingNoteId(undefined);
+                  }}
+                  key={n.id}
+                ></NoteCreatingForm>
+              )
+            )}
+          </section>
+        </div>
+      ))}
+    </section>
   );
 }

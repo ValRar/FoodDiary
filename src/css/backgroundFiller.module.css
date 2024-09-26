@@ -1,12 +1,12 @@
 .filler {
-	padding: 1rem 2.25rem;
-	border-radius: 4rem;
+  padding: 1rem 2.25rem;
+  border-radius: 4rem;
 }
 .filler-regular {
-	background-color: rgba(88, 246, 85, 0.7);
-	filter: drop-shadow(0 0 10px rgba(88, 246, 85, 0.705));
+  background-color: rgba(88, 246, 85, 0.7);
+  filter: drop-shadow(0 0 10px rgba(88, 246, 85, 0.705));
 }
 .filler-light {
-	background-color: rgba(4, 219, 0, 0.15);
-	filter: drop-shadow(0 0 10px rgba(88, 246, 85, 0.7));
+  background-color: rgba(4, 219, 0, 0.15);
+  filter: drop-shadow(0 0 10px rgba(88, 246, 85, 0.7));
 }

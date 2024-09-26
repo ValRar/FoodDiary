@@ -34,7 +34,13 @@ export default function AsyncIconButton({
         className={"!p-2" + (className ? " " + className : "")}
       >
         {!loading ? (
-          <Image src={src} alt={alt} height={height} width={width}></Image>
+          <Image
+            src={src}
+            alt={alt}
+            height={height}
+            width={width}
+            className="svg"
+          ></Image>
         ) : (
           <Oval width={width} height={height}></Oval>
         )}

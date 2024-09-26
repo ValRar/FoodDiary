@@ -71,12 +71,18 @@ export default function NoteCreatingForm({
   }
   return (
     <div className="md:pr-40">
-      <BackgroundFiller>
+      <BackgroundFiller className="relative">
         <div className="flex">
           <span className="font-bold text-xl ml-2 mr-1">
             {displayDate(note.creationTime)}
           </span>
-          <Image height={24} width={24} src="/clock.svg" alt="clock icon" />
+          <Image
+            height={24}
+            width={24}
+            src="/clock.svg"
+            alt="clock icon"
+            className="svg"
+          />
         </div>
         <div className="my-2">
           {note.entries.map((e) => (
@@ -92,6 +98,7 @@ export default function NoteCreatingForm({
                       alt="trash bin"
                       height={30}
                       width={30}
+                      className="svg"
                     ></Image>
                   </LightBackgroundFiller>
                 </label>
@@ -114,7 +121,7 @@ export default function NoteCreatingForm({
               <div className="flex-grow">
                 <input
                   type="text"
-                  className="bg-transparent outline-none w-full"
+                  className="bg-transparent outline-none w-full placeholder:text-green-text dark:placeholder:text-green-dark-text"
                   placeholder="Введите блюдо"
                   value={e.dish}
                   onChange={(event) => {
@@ -131,7 +138,7 @@ export default function NoteCreatingForm({
               <span> | </span>
               <input
                 type="number"
-                className="w-20 bg-transparent outline-none"
+                className="w-20 bg-transparent outline-none placeholder:text-green-text dark:placeholder:text-green-dark-text"
                 placeholder="ккал"
                 onChange={(event) =>
                   handleCaloriesChange(event.target.value, e.id)

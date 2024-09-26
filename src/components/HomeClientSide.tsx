@@ -9,13 +9,20 @@ import addNote from "@/actions/notes/addNote";
 import deleteNote from "@/actions/notes/deleteNote";
 import NoteEntry from "@/interfaces/NoteEntry";
 import updateNote from "@/actions/notes/updateNote";
+import NoteEndMessage from "./NoteEndMessage";
 
 export default function HomeClientSide({ notes }: { notes: Note[] }) {
   const { ref, inView } = useInView({ threshold: 0.5 });
-  const [page, setPage] = useState<number>(2);
   const [isEnd, setIsEnd] = useState<boolean>(false);
   const [notesArr, setNotesArr] = useState<Note[]>(notes);
-
+  function createNextDate(lastDate: Date): Date {
+    const nextDate = new Date(lastDate);
+    nextDate.setDate(lastDate.getDate() - 1);
+    return nextDate;
+  }
+  const [currentDate, setCurrentDate] = useState<Date>(
+    createNextDate(notes.at(-1)?.creationTime ?? new Date(Date.now()))
+  );
   async function onNoteDelete(id: number) {
     const success = await deleteNote(id);
     if (success) {
@@ -40,10 +47,11 @@ export default function HomeClientSide({ notes }: { notes: Note[] }) {
   }
   useEffect(() => {
     if (inView && !isEnd) {
-      setPage(page + 1);
-      getNotesPage({ page, pageSize: 10 }).then((n) => {
-        if (n.length == 0) setIsEnd(true);
+      getNotesPage(currentDate).then((n) => {
         setNotesArr([...notesArr, ...n]);
+        if (n.length > 0)
+          setCurrentDate(createNextDate(n.at(-1)!.creationTime));
+        else setIsEnd(true);
       });
     }
   }, [inView]);
@@ -62,7 +70,9 @@ export default function HomeClientSide({ notes }: { notes: Note[] }) {
         onDelete={onNoteDelete}
         onUpdate={onNoteUpdate}
       ></NotesView>
-      <label ref={ref}></label>
+      <label ref={ref}>
+        <NoteEndMessage isEnd={isEnd}></NoteEndMessage>
+      </label>
     </div>
   );
 }

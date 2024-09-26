@@ -18,7 +18,14 @@ export default function NoteDeletionModal({
   onConfirm: () => void;
 }) {
   return (
-    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+      classNames={{
+        base: "dark:bg-green-dark-background",
+        closeButton: "hover:bg-white/5 active:bg-white/10",
+      }}
+    >
       <ModalContent>
         {(onClose) => (
           <>

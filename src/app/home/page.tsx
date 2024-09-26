@@ -12,10 +12,10 @@ import { redirect } from "next/navigation";
 
 export default async function HomePage() {
   if (!cookies().has(REFRESH_TOKEN_NAME)) return redirect("/");
-  const notes = await getNotesPage({ page: 1, pageSize: 10 });
+  const notes = await getNotesPage(new Date(Date.now()));
   const displayName = cookies().get(DISPLAY_NAME_COOKIE_NAME)?.value;
   return (
-    <main className="min-h-screen">
+    <main>
       <label className="w-fit hidden xl:block fixed top-4 left-4">
         <Logo></Logo>
       </label>

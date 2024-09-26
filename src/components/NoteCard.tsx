@@ -32,7 +32,13 @@ export default function NoteCard({
           <span className="font-bold md:text-xl ml-2 mr-1">
             {displayDate(note.creationTime)}
           </span>
-          <Image height={24} width={24} src="/clock.svg" alt="clock icon" />
+          <Image
+            height={24}
+            width={24}
+            src="/clock.svg"
+            alt="clock icon"
+            className="svg"
+          />
         </div>
         <div className="md:my-2 my-1">
           {note.entries.map((e) => (

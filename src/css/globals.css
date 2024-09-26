@@ -7,22 +7,10 @@
   --text: #0c170c;
 }
 
-body {
-  background-color: var(--background);
-  color: var(--text);
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-}
-
-.input[contenteditable="true"]:empty:before {
-  content: attr(placeholder);
-  color: #555;
-  pointer-events: none;
-  display: block;
 }
 .interactive-button {
   @apply transition-transform;
@@ -33,4 +21,16 @@ body {
 }
 .interactive-button:active {
   @apply scale-95;
+}
+.svg {
+  filter: invert(5%) sepia(36%) saturate(790%) hue-rotate(71deg) brightness(93%)
+    contrast(95%);
+}
+.svg-green {
+  filter: brightness(0) saturate(100%) invert(47%) sepia(95%) saturate(1750%)
+    hue-rotate(83deg) brightness(108%) contrast(111%);
+}
+.dark .svg {
+  filter: invert(98%) sepia(4%) saturate(458%) hue-rotate(67deg) brightness(99%)
+    contrast(92%);
 }

@@ -38,7 +38,10 @@ export default function Home() {
           disabled={true}
         ></NoteCard>
         <nav className="py-8 flex flex-col items-center md:flex-row justify-center">
-          <Link href="/login" className="grow w-full md:w-auto md:mr-3 mb-2">
+          <Link
+            href="/login"
+            className="grow w-full md:w-auto md:mr-3 md:mb-0 mb-2"
+          >
             <Button className="w-full">
               <span className="text-3xl">Вход</span>
             </Button>
