@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../css/backgroundFiller.module.css";
+import styles from "@/css/BackgroundFiller.module.css";
 
 export default function BackgroundFiller({
   children,

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import styles from "@/css/textButton.module.css";
+import styles from "@/css/TextButton.module.css";
 
 export default function TextButton({
   children,
