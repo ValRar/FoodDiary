@@ -1,7 +1,6 @@
 ﻿using FoodDiaryWebApi.Data.Entities;
 using FoodDiaryWebApi.Data.Requests;
 using FoodDiaryWebApi.Data.Responses;
-using FoodDiaryWebApi.Services;
 using FoodDiaryWebApi.Services.Implementations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,18 +26,23 @@ namespace FoodDiaryWebApi.Controllers
         {
             var startDateTime = start_day.ToDateTime(TimeOnly.MaxValue).ToUniversalTime(); 
             var user = GetUser();
-            var notes = _db.Notes.AsNoTracking()
+            var minimumNotes = _db.Notes.AsNoTracking()
                 .Include(n => n.Entries)
                 .Where(n => n.AuthorId == user.Id && n.CreationTime <= startDateTime)
-                .OrderByDescending(n => n.CreationTime).ToList();
-            var minimumNotes = notes.Take(minimum_length).ToArray();
+                .OrderByDescending(n => n.CreationTime)
+                .Take(minimum_length)
+                .ToList();
             if (minimumNotes.Count() >= minimum_length)
             {
-                minimumNotes = minimumNotes.Concat(
-                    notes
-                    .Skip(minimumNotes.Count())
-                    .TakeWhile(n => n.CreationTime.DayOfYear == minimumNotes.Last().CreationTime.DayOfYear)
-                    ).ToArray();
+                var lastDate = minimumNotes.Last().CreationTime;
+                minimumNotes.AddRange(
+                    _db.Notes.Where(n => n.CreationTime.DayOfYear == lastDate.DayOfYear && 
+                    n.CreationTime.Year == lastDate.Year && 
+                    n.AuthorId == user.Id &&
+                    n.CreationTime.TimeOfDay < lastDate.TimeOfDay)
+                    .Include(n => n.Entries)
+                    .ToArray()
+                    );
             }
             return Ok(minimumNotes.Select(NoteResponse.MapFromEntity));
         }
