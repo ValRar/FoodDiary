@@ -41,6 +41,7 @@ namespace FoodDiaryWebApi.Controllers
                     n.AuthorId == user.Id &&
                     n.CreationTime.TimeOfDay < lastDate.TimeOfDay)
                     .Include(n => n.Entries)
+                    .OrderByDescending(n => n.CreationTime)
                     .ToArray()
                     );
             }

@@ -1,11 +1,21 @@
 services:
-  backend:
-    build: .
+  frontend:
+    build: /frontend
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__postgres=Server=db;Port=5432;Database=Diary;User Id=postgres;Password=5936;
-      - AllowedHost=http://localhost:3000
+      - BACKEND_BASE_URL=http://backend:8080
     ports:
+    - 3000:3000
+    depends_on:
+      - backend
+  backend:
+    build: /backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__postgres=Server=db;Port=5432;Database=Diary;User Id=postgres;Password=5936;
+      # - AllowedHost=http://localhost:3000
+    ports:
+      - 8080:8080
+    expose:
       - 8080:8080
     depends_on:
       - db
@@ -17,7 +27,7 @@ services:
       - POSTGRES_PASSWORD=5936
       - POSTGRES_DB=Diary
     volumes:
-      - ./initDb:/docker-entrypoint-initdb.d
+      - /backend/initDb:/docker-entrypoint-initdb.d
       - /var/lib/postgres:/var/lib/postgresql
     expose:
       - 5432:5432
