@@ -8,6 +8,7 @@ const config: Config = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
     "./node_modules/@nextui-org/theme/dist/components/modal.js",
+    "./node_modules/@nextui-org/theme/dist/components/dropdown.js",
   ],
   theme: {
     colors: {
@@ -21,6 +22,7 @@ const config: Config = {
       silver: "#ecebff",
       "bubble-gum": "#ff77e9",
       bermuda: "#78dcca",
+      "green-regular": "#58f655",
       "green-background": "#f4fbf4",
       "green-text": "#0c170c",
       "green-dark-background": "#040b04",

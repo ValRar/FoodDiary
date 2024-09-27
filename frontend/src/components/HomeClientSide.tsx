@@ -56,7 +56,7 @@ export default function HomeClientSide({ notes }: { notes: Note[] }) {
     }
   }, [inView]);
   return (
-    <div className="xl:mx-96 md:mx-24 mx-2 pt-4">
+    <div className="xl:mx-96 md:mx-24 lg:mx-48 mx-2 pt-4">
       <NoteCreatingForm
         onSubmit={async (entries) => {
           const newNote = await addNote(entries);

@@ -77,6 +77,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    Log.Logger.Information("Enabling CORS.");
     app.UseCors();
 }
 
