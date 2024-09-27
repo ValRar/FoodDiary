@@ -1,0 +1,19 @@
+.background-filler {
+  border-radius: 1.5rem;
+  background-color: #04db00;
+  filter: drop-shadow(0 0 10px rgba(88, 246, 85, 0.705));
+  width: 100%;
+  height: 100%;
+  padding: 1rem 5rem;
+  transition: transform 0.1s;
+}
+
+.background-filler:hover {
+  transform: scale(1.05);
+}
+.background-filler:active {
+  transform: scale(0.95);
+}
+.dark .background-filler {
+  filter: none;
+}

@@ -1,0 +1,27 @@
+.underline {
+  background-color: var(--text);
+  min-height: 2px;
+  height: 2px;
+  transform: translateY(-4px);
+  transition: transform 0.2s, height 0.2s;
+}
+.container {
+  width: fit-content;
+  padding-bottom: 4px;
+  transition: padding-bottom 0.2s;
+  cursor: default;
+}
+.text {
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+.enabled {
+  cursor: pointer;
+}
+.container:hover .underline {
+  height: 4px;
+  transform: translateY(-6px);
+}
+.container:hover {
+  padding-bottom: 2px;
+}
