@@ -8,6 +8,7 @@ import {
 import React, { useState } from "react";
 import LightBackgroundFiller from "./LightBackgroundFiller";
 import Image from "next/image";
+import { DARK_THEME_COOKIE_NAME } from "@/actions/constants";
 
 export default function ThemeChangerDropdown({
   showDarkInitial,
@@ -39,12 +40,12 @@ export default function ThemeChangerDropdown({
           const htmlElement = document.getElementsByTagName("html")[0];
           switch (key) {
             case "light":
-              document.cookie = "show_dark=0";
+              document.cookie = `${DARK_THEME_COOKIE_NAME}=0`;
               htmlElement.classList.remove("dark");
               setShowDark(false);
               break;
             case "dark":
-              document.cookie = "show_dark=1";
+              document.cookie = `${DARK_THEME_COOKIE_NAME}=1`;
               htmlElement.classList.add("dark");
               setShowDark(true);
               break;

@@ -5,7 +5,7 @@ function detectColorTheme() {
     const html = document.getElementsByTagName("html")[0];
     html.classList.add("dark");
   } else {
-    document.cookie = "show_dark=0";
+    document.cookie = "show_dark_theme=0";
   }
 }
 

@@ -4,6 +4,7 @@ import "../css/globals.css";
 import { NextUIProvider } from "@nextui-org/system";
 import { cookies } from "next/headers";
 import Script from "next/script";
+import { DARK_THEME_COOKIE_NAME } from "@/actions/constants";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   let showDarkmode = false;
-  const themeCookie = cookies().get("show_dark");
+  const themeCookie = cookies().get(DARK_THEME_COOKIE_NAME);
   if (themeCookie && themeCookie.value === "1") showDarkmode = true;
   return (
     <html lang="ru" className={"h-full" + (showDarkmode ? " dark" : "")}>
