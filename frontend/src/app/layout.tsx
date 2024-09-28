@@ -21,7 +21,7 @@ export default function RootLayout({
   const themeCookie = cookies().get("show_dark");
   if (themeCookie && themeCookie.value === "1") showDarkmode = true;
   return (
-    <html lang="en" className={"h-full" + (showDarkmode ? " dark" : "")}>
+    <html lang="ru" className={"h-full" + (showDarkmode ? " dark" : "")}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>

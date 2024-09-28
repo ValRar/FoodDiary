@@ -1,4 +1,7 @@
-import { REFRESH_TOKEN_NAME } from "@/actions/constants";
+import {
+  DARK_THEME_COOKIE_NAME,
+  REFRESH_TOKEN_NAME,
+} from "@/actions/constants";
 import getNotesPage from "@/actions/notes/getNotesPage";
 import HomeClientSide from "@/components/HomeClientSide";
 import Logo from "@/components/Logo";
@@ -10,7 +13,7 @@ import { redirect } from "next/navigation";
 export default async function HomePage() {
   if (!cookies().has(REFRESH_TOKEN_NAME)) return redirect("/");
   const notes = await getNotesPage(new Date(Date.now()));
-  const showDarkCookie = cookies().get("show_dark");
+  const showDarkCookie = cookies().get(DARK_THEME_COOKIE_NAME);
   const showDark = showDarkCookie ? showDarkCookie.value === "1" : false;
   return (
     <main>

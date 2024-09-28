@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BackgroundFiller from "./BackgroundFiller";
 import { displayDate } from "./utilities";
 import NoteEntry from "@/interfaces/NoteEntry";

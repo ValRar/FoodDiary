@@ -5,7 +5,6 @@ import { BASE_URL, JWT_NAME } from "../constants";
 
 export default async function getNotesPage(startDate: Date): Promise<Note[]> {
   const token = cookies().get(JWT_NAME)?.value;
-
   const request = await fetch(
     `${BASE_URL}/notes/get_page?&minimum_length=10&start_day=${startDate.toDateString()}`,
     {
