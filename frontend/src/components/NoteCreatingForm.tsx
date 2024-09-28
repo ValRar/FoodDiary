@@ -1,14 +1,14 @@
 "use client";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import BackgroundFiller from "./BackgroundFiller";
-import { displayDate } from "./utilities";
-import NoteEntry from "@/interfaces/NoteEntry";
-import TextButton from "./TextButton";
-import LightBackgroundFiller from "./LightBackgroundFiller";
 import calculateCalories from "@/actions/notes/calculateCalories";
-import AsyncIconButton from "./AsyncIconButton";
 import { Note } from "@/interfaces/Note";
+import NoteEntry from "@/interfaces/NoteEntry";
+import Image from "next/image";
+import { useState } from "react";
+import AsyncIconButton from "./AsyncIconButton";
+import BackgroundFiller from "./BackgroundFiller";
+import LightBackgroundFiller from "./LightBackgroundFiller";
+import TextButton from "./TextButton";
+import { displayDate } from "./utilities";
 
 export default function NoteCreatingForm({
   onSubmit,
@@ -92,7 +92,7 @@ export default function NoteCreatingForm({
                   onClick={() => removeRow(e.id)}
                   className="mr-2 cursor-pointer"
                 >
-                  <LightBackgroundFiller className="!p-2 outline-green-text outline-1 outline md:outline-none interactive-button">
+                  <LightBackgroundFiller className="!p-2 outline-green-text dark:md:outline-none dark:outline-green-dark-text outline-1 outline md:outline-none interactive-button">
                     <Image
                       src="/trash_bin.svg"
                       alt="trash bin"
@@ -107,7 +107,7 @@ export default function NoteCreatingForm({
                   src="/magic_stick.svg"
                   height={30}
                   width={30}
-                  className="outline-green-text outline-1 outline md:outline-none interactive-button"
+                  className="outline-green-text dark:md:outline-none dark:outline-green-dark-text outline-1 outline md:outline-none interactive-button"
                   onClick={async () => {
                     const calories = await calculateCalories(e.dish);
                     handleCaloriesChange(
