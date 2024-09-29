@@ -7,16 +7,17 @@ services:
       - backend
     expose:
       - 3000:3000
+    restart: on-failure
   backend:
     build: /backend
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__postgres=Server=db;Port=5432;Database=Diary;User Id=postgres;Password=5936;
-      # - AllowedHost=http://localhost:3000
     expose:
       - 8080:8080
     depends_on:
       - db
+    restart: on-failure
   db:
     image: postgres
     environment:
@@ -38,3 +39,5 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - /etc/letsencrypt/archive/fooddiary.xyz:/etc/nginx/ssl/fooddiary.xyz
       - ./ssl:/etc/nginx/ssl/dhparam
+    restart: on-failure
+
