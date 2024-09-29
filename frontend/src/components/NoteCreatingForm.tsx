@@ -8,7 +8,6 @@ import AsyncIconButton from "./AsyncIconButton";
 import BackgroundFiller from "./BackgroundFiller";
 import LightBackgroundFiller from "./LightBackgroundFiller";
 import TextButton from "./TextButton";
-import { displayDate } from "./utilities";
 import dynamic from "next/dynamic";
 const TimeSpan = dynamic(() => import("./TimeSpan"), {
   ssr: false,
@@ -171,7 +170,17 @@ export default function NoteCreatingForm({
           </TextButton>
           <TextButton
             className="ml-3"
-            onClick={() => (onSubmit ? onSubmit(note.entries) : undefined)}
+            onClick={() => {
+              const validEntries = note.entries.filter(
+                (e) => e.dish && e.dish !== ""
+              );
+              if (validEntries.length === 0) return;
+              if (onSubmit) onSubmit(validEntries);
+              setNote({
+                ...note,
+                entries: validEntries,
+              });
+            }}
           >
             <span className="lg:text-xl md:text-base text-xs font-bold">
               Завершить запись
