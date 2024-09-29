@@ -4,12 +4,12 @@ import { Note } from "@/interfaces/Note";
 import React, { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import NoteCreatingForm from "./NoteCreatingForm";
-import NotesView from "./NotesView";
 import addNote from "@/actions/notes/addNote";
 import deleteNote from "@/actions/notes/deleteNote";
 import NoteEntry from "@/interfaces/NoteEntry";
 import updateNote from "@/actions/notes/updateNote";
 import NoteEndMessage from "./NoteEndMessage";
+import NotesView from "./NotesView";
 
 export default function HomeClientSide({ notes }: { notes: Note[] }) {
   const { ref, inView } = useInView({ threshold: 0.5 });

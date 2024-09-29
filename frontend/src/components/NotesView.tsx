@@ -2,11 +2,11 @@
 
 import { Note } from "@/interfaces/Note";
 import React, { useState } from "react";
-import NoteCard from "./NoteCard";
 import GroupedNotes from "@/interfaces/GroupedNotes";
 import DayHeader from "./DayHeader";
 import NoteEntry from "@/interfaces/NoteEntry";
 import NoteCreatingForm from "./NoteCreatingForm";
+import NoteCard from "./NoteCard";
 
 function groupNotes(notes: Note[]): GroupedNotes[] {
   const groupedNotes: GroupedNotes[] = [];

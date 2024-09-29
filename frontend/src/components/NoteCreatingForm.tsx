@@ -9,6 +9,10 @@ import BackgroundFiller from "./BackgroundFiller";
 import LightBackgroundFiller from "./LightBackgroundFiller";
 import TextButton from "./TextButton";
 import { displayDate } from "./utilities";
+import dynamic from "next/dynamic";
+const TimeSpan = dynamic(() => import("./TimeSpan"), {
+  ssr: false,
+});
 
 export default function NoteCreatingForm({
   onSubmit,
@@ -73,9 +77,10 @@ export default function NoteCreatingForm({
     <div className="md:pr-40">
       <BackgroundFiller className="relative">
         <div className="flex">
-          <span className="font-bold text-xl ml-2 mr-1">
-            {displayDate(note.creationTime)}
-          </span>
+          <TimeSpan
+            className="font-bold text-xl ml-2 mr-1"
+            date={note.creationTime}
+          ></TimeSpan>
           <Image
             height={24}
             width={24}

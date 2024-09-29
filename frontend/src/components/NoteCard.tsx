@@ -4,8 +4,11 @@ import { useDisclosure } from "@nextui-org/modal";
 import Image from "next/image";
 import BackgroundFiller from "./BackgroundFiller";
 import TextButton from "./TextButton";
-import { displayDate } from "./utilities";
 import NoteDeletionModal from "./NoteDeletionModal";
+import dynamic from "next/dynamic";
+const TimeSpan = dynamic(() => import("./TimeSpan"), {
+  ssr: false,
+});
 export default function NoteCard({
   note,
   disabled = false,
@@ -29,9 +32,10 @@ export default function NoteCard({
       ></NoteDeletionModal>
       <BackgroundFiller>
         <div className="flex">
-          <span className="font-bold md:text-xl ml-2 mr-1">
-            {displayDate(note.creationTime)}
-          </span>
+          <TimeSpan
+            className="font-bold md:text-xl ml-2 mr-1"
+            date={note.creationTime}
+          ></TimeSpan>
           <Image
             height={24}
             width={24}
