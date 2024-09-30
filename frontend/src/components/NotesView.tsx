@@ -7,6 +7,7 @@ import DayHeader from "./DayHeader";
 import NoteEntry from "@/interfaces/NoteEntry";
 import NoteCreatingForm from "./NoteCreatingForm";
 import NoteCard from "./NoteCard";
+import { motion } from "framer-motion";
 
 function groupNotes(notes: Note[]): GroupedNotes[] {
   const groupedNotes: GroupedNotes[] = [];
@@ -67,13 +68,19 @@ export default function NotesView({
           <section>
             {g.notes.map((n) =>
               n.id !== changingNoteId ? (
-                <NoteCard
-                  note={n}
+                <motion.div
+                  style={{ originY: 0 }}
                   key={n.id}
-                  onClickDelete={onDelete}
-                  onClickUpdate={setChangingNoteId}
-                  className="my-5"
-                ></NoteCard>
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                >
+                  <NoteCard
+                    note={n}
+                    onClickDelete={onDelete}
+                    onClickUpdate={setChangingNoteId}
+                    className="my-5"
+                  ></NoteCard>
+                </motion.div>
               ) : (
                 <NoteCreatingForm
                   initialValue={n}

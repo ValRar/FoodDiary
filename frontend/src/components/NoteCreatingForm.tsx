@@ -3,15 +3,13 @@ import calculateCalories from "@/actions/notes/calculateCalories";
 import { Note } from "@/interfaces/Note";
 import NoteEntry from "@/interfaces/NoteEntry";
 import Image from "next/image";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import AsyncIconButton from "./AsyncIconButton";
 import BackgroundFiller from "./BackgroundFiller";
 import LightBackgroundFiller from "./LightBackgroundFiller";
 import TextButton from "./TextButton";
-import dynamic from "next/dynamic";
-const TimeSpan = dynamic(() => import("./TimeSpan"), {
-  ssr: false,
-});
+import { Oval } from "react-loader-spinner";
+const TimeSpan = lazy(() => import("./TimeSpan"));
 
 export default function NoteCreatingForm({
   onSubmit,
@@ -76,10 +74,16 @@ export default function NoteCreatingForm({
     <div className="md:pr-40">
       <BackgroundFiller className="relative">
         <div className="flex">
-          <TimeSpan
-            className="font-bold text-xl ml-2 mr-1"
-            date={note.creationTime}
-          ></TimeSpan>
+          <Suspense
+            fallback={
+              <span className="font-bold text-xl ml-2 mr-1">XX:XX</span>
+            }
+          >
+            <TimeSpan
+              className="font-bold text-xl ml-2 mr-1"
+              date={note.creationTime}
+            ></TimeSpan>
+          </Suspense>
           <Image
             height={24}
             width={24}

@@ -1,10 +1,16 @@
 import Image from "next/image";
 import React from "react";
 import { Oval } from "react-loader-spinner";
+import * as motion from "framer-motion/client";
 
 export default function NoteEndMessage({ isEnd }: { isEnd: boolean }) {
   return (
-    <label className="flex items-center flex-col">
+    <motion.label
+      className="flex items-center flex-col"
+      style={{ originY: 0 }}
+      initial={{ opacity: 0, scale: 0 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+    >
       {isEnd ? (
         <>
           <Image
@@ -24,6 +30,6 @@ export default function NoteEndMessage({ isEnd }: { isEnd: boolean }) {
           <span className="ml-2 mt-2 md:text-xl font-bold">Загрузка...</span>
         </>
       )}
-    </label>
+    </motion.label>
   );
 }

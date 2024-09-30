@@ -5,10 +5,8 @@ import Image from "next/image";
 import BackgroundFiller from "./BackgroundFiller";
 import TextButton from "./TextButton";
 import NoteDeletionModal from "./NoteDeletionModal";
-import dynamic from "next/dynamic";
-const TimeSpan = dynamic(() => import("./TimeSpan"), {
-  ssr: false,
-});
+import { lazy, Suspense } from "react";
+const TimeSpan = lazy(() => import("./TimeSpan"));
 export default function NoteCard({
   note,
   disabled = false,
@@ -32,10 +30,16 @@ export default function NoteCard({
       ></NoteDeletionModal>
       <BackgroundFiller>
         <div className="flex">
-          <TimeSpan
-            className="font-bold md:text-xl ml-2 mr-1"
-            date={note.creationTime}
-          ></TimeSpan>
+          <Suspense
+            fallback={
+              <span className="font-bold text-xl ml-2 mr-1">XX:XX</span>
+            }
+          >
+            <TimeSpan
+              className="font-bold md:text-xl ml-2 mr-1"
+              date={note.creationTime}
+            ></TimeSpan>
+          </Suspense>
           <Image
             height={24}
             width={24}
