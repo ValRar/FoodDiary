@@ -2,6 +2,7 @@
 import React from "react";
 import LightBackgroundFiller from "./LightBackgroundFiller";
 import Image from "next/image";
+import ExitImage from "../../public/exit.svg";
 import logout from "@/actions/authentication/logout";
 import {
   Modal,
@@ -13,14 +14,14 @@ import {
 } from "@nextui-org/modal";
 import BackgroundFiller from "./BackgroundFiller";
 
-export default function LogoutButton() {
+export default function LogoutButton({ className }: { className?: string }) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <>
-      <button onClick={onOpen} className="ml-2 interactive-button">
-        <LightBackgroundFiller className="!p-5 cursor-pointer">
+      <button onClick={onOpen} className={className}>
+        <LightBackgroundFiller className="!p-5 cursor-pointer !bg-[#51e64e] md:!bg-[#04db00]/[0.15]">
           <Image
-            src="/exit.svg"
+            src={ExitImage}
             alt="exit icon"
             width={40}
             height={40}

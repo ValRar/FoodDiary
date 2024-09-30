@@ -8,6 +8,8 @@ import {
 import React, { useState } from "react";
 import LightBackgroundFiller from "./LightBackgroundFiller";
 import Image from "next/image";
+import SunImage from "../../public/sun.svg";
+import MoonImage from "../../public/moon.svg";
 import { DARK_THEME_COOKIE_NAME } from "@/actions/constants";
 
 export default function ThemeChangerDropdown({
@@ -23,10 +25,10 @@ export default function ThemeChangerDropdown({
       }}
     >
       <DropdownTrigger>
-        <button className="interactive-button outline-none hidden lg:block">
-          <LightBackgroundFiller className="!p-5">
+        <button className="interactive-button outline-none">
+          <LightBackgroundFiller className="!p-5 !bg-[#51e64e] md:!bg-[#04db00]/[0.15]">
             <Image
-              src={showDark ? "/moon.svg" : "/sun.svg"}
+              src={showDark ? MoonImage : SunImage}
               alt="current color theme icon"
               height={40}
               width={40}
@@ -59,7 +61,7 @@ export default function ThemeChangerDropdown({
           key="dark"
           startContent={
             <Image
-              src="/moon.svg"
+              src={MoonImage}
               alt="moon"
               height={15}
               width={15}
@@ -73,7 +75,7 @@ export default function ThemeChangerDropdown({
           key="light"
           startContent={
             <Image
-              src="/sun.svg"
+              src={SunImage}
               alt="sun"
               height={15}
               width={15}

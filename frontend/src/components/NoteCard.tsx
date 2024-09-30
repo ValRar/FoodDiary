@@ -2,6 +2,7 @@
 import { Note } from "@/interfaces/Note";
 import { useDisclosure } from "@nextui-org/modal";
 import Image from "next/image";
+import ClockImage from "../../public/clock.svg";
 import BackgroundFiller from "./BackgroundFiller";
 import TextButton from "./TextButton";
 import NoteDeletionModal from "./NoteDeletionModal";
@@ -43,7 +44,7 @@ export default function NoteCard({
           <Image
             height={24}
             width={24}
-            src="/clock.svg"
+            src={ClockImage}
             alt="clock icon"
             className="svg"
           />

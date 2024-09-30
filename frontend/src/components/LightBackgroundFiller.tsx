@@ -12,7 +12,7 @@ export default function LightBackgroundFiller({
     <div
       className={
         styles.filler +
-        " dark:!filter-none " +
+        " dark:!filter-none dark:!bg-[#012100] " +
         styles["filler-light"] +
         (className ? " " + className : "")
       }

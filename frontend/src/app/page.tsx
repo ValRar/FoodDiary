@@ -12,7 +12,7 @@ const pacifico = Pacifico({
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start p-4 md:px-96">
+    <main className="flex min-h-screen flex-col items-center justify-start p-4 lg:px-96">
       <Logo />
       <div
         className={

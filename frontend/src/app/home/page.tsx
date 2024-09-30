@@ -20,9 +20,9 @@ export default async function HomePage() {
       <label className="w-fit hidden xl:block fixed top-4 left-4">
         <Logo></Logo>
       </label>
-      <div className="w-fit fixed top-4 right-3 md:flex items-center hidden">
+      <div className="w-fit fixed md:top-4 md:bottom-auto right-3 bottom-2 flex flex-col lg:flex-row items-center z-10">
         <ThemeChangerDropdown showDarkInitial={showDark}></ThemeChangerDropdown>
-        <LogoutButton></LogoutButton>
+        <LogoutButton className="mt-2 lg:ml-2 lg:mt-0 interactive-button"></LogoutButton>
       </div>
       <HomeClientSide notes={notes}></HomeClientSide>
     </main>

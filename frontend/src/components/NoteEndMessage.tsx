@@ -1,4 +1,5 @@
 import Image from "next/image";
+import FileCorruptImage from "../../public/file_corrupt.svg";
 import React from "react";
 import { Oval } from "react-loader-spinner";
 import * as motion from "framer-motion/client";
@@ -14,7 +15,7 @@ export default function NoteEndMessage({ isEnd }: { isEnd: boolean }) {
       {isEnd ? (
         <>
           <Image
-            src="/file_corrupt.svg"
+            src={FileCorruptImage}
             alt="file corrupt"
             width={100}
             height={100}

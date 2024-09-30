@@ -1,6 +1,7 @@
 import React from "react";
 import { Pacifico } from "next/font/google";
 import LightBackgroundFiller from "./LightBackgroundFiller";
+import NoteImage from "../../public/note.svg";
 import Image from "next/image";
 
 const pacifico = Pacifico({
@@ -14,7 +15,7 @@ export default function Logo() {
     <LightBackgroundFiller>
       <div className="flex items-center">
         <Image
-          src="/note.svg"
+          src={NoteImage}
           alt="Note icon"
           width={50}
           height={50}

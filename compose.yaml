@@ -1,6 +1,6 @@
 services:
   frontend:
-    build: /frontend
+    build: ./frontend
     environment:
       - BACKEND_BASE_URL=http://backend:8080
     depends_on:
@@ -9,15 +9,14 @@ services:
       - 3000:3000
     restart: on-failure
   backend:
-    build: /backend
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__postgres=Server=db;Port=5432;Database=Diary;User Id=postgres;Password=5936;
+    build: ./backend
     expose:
       - 8080:8080
     depends_on:
       - db
     restart: on-failure
+    env_file:
+      - backend.env
   db:
     image: postgres
     environment:
