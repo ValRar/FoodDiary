@@ -13,21 +13,21 @@ import TextButton from "./TextButton";
 import { AnimatePresence, motion } from "framer-motion";
 const TimeSpan = lazy(() => import("./TimeSpan"));
 
+const defaultInitialNote: Note = {
+  creationTime: new Date(Date.now()),
+  id: 0,
+  entries: [{ id: 0, dish: "" }],
+};
+
 export default function NoteCreatingForm({
   onSubmit,
   initialValue,
 }: {
-  onSubmit?: (entries: NoteEntry[]) => void;
+  onSubmit?: (entries: NoteEntry[]) => Promise<boolean>;
   initialValue?: Note;
 }) {
   const [note, setNote] = useState<Note>(
-    initialValue
-      ? initialValue
-      : {
-          creationTime: new Date(Date.now()),
-          id: 0,
-          entries: [{ id: 0, dish: "" }],
-        }
+    initialValue ? initialValue : defaultInitialNote
   );
   function handleDishChange(input: string, id: number) {
     setNote({
@@ -60,10 +60,12 @@ export default function NoteCreatingForm({
     });
   }
   function removeRow(id: number) {
-    setNote({
-      ...note,
-      entries: note.entries.filter((e) => e.id !== id),
-    });
+    if (note.entries.length > 1) {
+      setNote({
+        ...note,
+        entries: note.entries.filter((e) => e.id !== id),
+      });
+    }
   }
   function parseCalories(value: string): number | undefined {
     try {
@@ -178,7 +180,7 @@ export default function NoteCreatingForm({
         </div>
         <div className="md:mx-2">
           <TextButton
-            onClick={(e) => {
+            onClick={() => {
               addRow();
             }}
           >
@@ -188,16 +190,21 @@ export default function NoteCreatingForm({
           </TextButton>
           <TextButton
             className="ml-3"
-            onClick={() => {
+            onClick={async () => {
               const validEntries = note.entries.filter(
                 (e) => e.dish && e.dish !== ""
               );
               if (validEntries.length === 0) return;
-              if (onSubmit) onSubmit(validEntries);
-              setNote({
-                ...note,
-                entries: validEntries,
-              });
+              let success = false;
+              if (onSubmit) {
+                success = await onSubmit(validEntries);
+              }
+              if (!success)
+                setNote({
+                  ...note,
+                  entries: validEntries,
+                });
+              else setNote(defaultInitialNote);
             }}
           >
             <span className="lg:text-xl md:text-base text-xs font-bold">

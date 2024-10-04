@@ -62,7 +62,9 @@ export default function HomeClientSide({ notes }: { notes: Note[] }) {
           const newNote = await addNote(entries);
           if (newNote) {
             setNotesArr([newNote, ...notesArr]);
+            return true;
           }
+          return false;
         }}
       ></NoteCreatingForm>
       <NotesView
