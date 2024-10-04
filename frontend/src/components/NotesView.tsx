@@ -87,6 +87,7 @@ export default function NotesView({
                   onSubmit={(entries) => {
                     onUpdate(n.id, entries);
                     setChangingNoteId(undefined);
+                    return new Promise<boolean>(() => false);
                   }}
                   key={n.id}
                 ></NoteCreatingForm>
