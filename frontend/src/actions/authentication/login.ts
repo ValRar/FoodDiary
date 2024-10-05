@@ -35,7 +35,13 @@ export default async function login(prevState: any, data: FormData) {
       response.token,
       cookieSettings(new Date(response.expires))
     );
-    cookies().set(REFRESH_TOKEN_NAME, refreshToken!, cookieSettings());
+    const refreshExpiringDate = new Date(Date.now());
+    refreshExpiringDate.setDate(refreshExpiringDate.getDate() + 1);
+    cookies().set(
+      REFRESH_TOKEN_NAME,
+      refreshToken!,
+      cookieSettings(refreshExpiringDate)
+    );
     redirect("/home");
   } else {
     return { message: "Введите все необходимые данные." };
