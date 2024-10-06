@@ -30,14 +30,14 @@ export async function middleware(request: NextRequest) {
         tokens?.tokenResponse.token,
         cookieSettings(new Date(tokens.tokenResponse.expires))
       );
-      const refreshTokenExpiringDate = new Date(Date.now());
-      refreshTokenExpiringDate.setMonth(
-        refreshTokenExpiringDate.getMonth() + 1
+      const refreshTokenExpirationDate = new Date(Date.now());
+      refreshTokenExpirationDate.setMonth(
+        refreshTokenExpirationDate.getMonth() + 1
       );
       response.cookies.set(
         REFRESH_TOKEN_NAME,
         tokens.refreshToken,
-        cookieSettings(refreshTokenExpiringDate)
+        cookieSettings(refreshTokenExpirationDate)
       );
       return response;
     } catch (e) {

@@ -32,12 +32,12 @@ export default async function register(prevState: any, data: FormData) {
       response.token,
       cookieSettings(new Date(response.expires))
     );
-    const refreshExpiringDate = new Date(Date.now());
-    refreshExpiringDate.setDate(refreshExpiringDate.getDate() + 1);
+    const refreshExpirationDate = new Date(Date.now());
+    refreshExpirationDate.setDate(refreshExpirationDate.getDate() + 1);
     cookies().set(
       REFRESH_TOKEN_NAME,
       refreshToken!,
-      cookieSettings(refreshExpiringDate)
+      cookieSettings(refreshExpirationDate)
     );
     redirect("/home");
   } else {

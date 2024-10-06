@@ -5,7 +5,9 @@ function detectColorTheme() {
     const html = document.getElementsByTagName("html")[0];
     html.classList.add("dark");
   } else {
-    document.cookie = "show_dark_theme=0";
+    let cookieExpirationDate = new Date(Date.now() + 2628e9);
+    document.cookie =
+      "show_dark_theme=0; expires=" + cookieExpirationDate.toUTCString();
   }
 }
 
