@@ -1,6 +1,7 @@
 import Logo from "@/components/Logo";
 import React from "react";
-import LoginForm from "@/components/LoginForm";
+import UserCredentialsForm from "@/components/UserCredentialsForm";
+import login from "@/actions/authentication/login";
 
 export default function LoginPage() {
   return (
@@ -12,7 +13,7 @@ export default function LoginPage() {
         <span className="font-bold md:text-4xl text-3xl mb-3">
           Вход в аккаунт
         </span>
-        <LoginForm></LoginForm>
+        <UserCredentialsForm onSubmit={login} />
       </div>
     </>
   );
