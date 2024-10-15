@@ -7,14 +7,14 @@ services:
       - backend
     expose:
       - 3000:3000
-    restart: on-failure
+    restart: always
   backend:
     build: ./backend
     expose:
       - 8080:8080
     depends_on:
       - db
-    restart: on-failure
+    restart: always
     env_file:
       - backend.env
   db:
@@ -27,7 +27,7 @@ services:
       - /var/lib/postgres:/var/lib/postgresql
     expose:
       - 5432:5432
-    restart: on-failure
+    restart: always
   nginx:
     image: nginx:stable-alpine
     ports:
@@ -39,5 +39,5 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - /etc/letsencrypt/archive/fooddiary.xyz:/etc/nginx/ssl/fooddiary.xyz
       - ./ssl:/etc/nginx/ssl/dhparam
-    restart: on-failure
+    restart: always
 
