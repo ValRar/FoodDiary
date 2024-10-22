@@ -36,7 +36,7 @@ export default async function login(prevState: any, data: FormData) {
       cookieSettings(new Date(response.expires))
     );
     const refreshExpirationDate = new Date(Date.now());
-    refreshExpirationDate.setDate(refreshExpirationDate.getDate() + 1);
+    refreshExpirationDate.setMonth(refreshExpirationDate.getMonth() + 1);
     cookies().set(
       REFRESH_TOKEN_NAME,
       refreshToken!,
