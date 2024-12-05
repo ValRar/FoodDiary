@@ -12,7 +12,7 @@ const pacifico = Pacifico({
 
 export default function Logo() {
   return (
-    <LightBackgroundFiller>
+    <LightBackgroundFiller className="hidden sm:block">
       <div className="flex items-center">
         <Image
           src={NoteImage}

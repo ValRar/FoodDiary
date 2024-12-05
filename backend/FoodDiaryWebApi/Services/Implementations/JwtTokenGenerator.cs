@@ -16,7 +16,12 @@ namespace FoodDiaryWebApi.Services.Implementations
 
         public JwtTokenGenerator(IOptions<JwtConfiguration> options)
         {
-            _signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.SecurityKey)), SecurityAlgorithms.HmacSha256);
+            _signingCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(options.Value.SecurityKey)
+                    ),
+                SecurityAlgorithms.HmacSha256
+                );
             _options = options;
             TokenLifetimeMinutes = options.Value.ExpiresMinutes;
         }
