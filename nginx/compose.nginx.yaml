@@ -1,0 +1,27 @@
+services:
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+    - 80:80
+    - 443:443
+    depends_on:
+      - frontend
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt/archive/fooddiary.xyz:/etc/nginx/ssl/fooddiary.xyz
+      - ./ssl:/etc/nginx/ssl/dhparam
+    secrets:
+      - ssl_certificate
+      - ssl_certificate_key
+      - ssl_dhparam
+    restart: always
+  frontend:
+    expose:
+      - 3000:3000
+secrets:
+  ssl_certificate:
+    file: ${SSL_CERTIFICATE}
+  ssl_certificate_key:
+    file: ${SSL_CERTIFICATE_KEY}
+  ssl_dhparam:
+    file: ${SSL_DHPARAM}

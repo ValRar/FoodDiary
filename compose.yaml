@@ -5,7 +5,7 @@ services:
       - BACKEND_BASE_URL=http://backend:8080
     depends_on:
       - backend
-    expose:
+    ports:
       - 3000:3000
     restart: always
   backend:
@@ -28,16 +28,3 @@ services:
     expose:
       - 5432:5432
     restart: always
-  nginx:
-    image: nginx:stable-alpine
-    ports:
-    - 80:80
-    - 443:443
-    depends_on:
-      - frontend
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf:ro
-      - /etc/letsencrypt/archive/fooddiary.xyz:/etc/nginx/ssl/fooddiary.xyz
-      - ./ssl:/etc/nginx/ssl/dhparam
-    restart: always
-
