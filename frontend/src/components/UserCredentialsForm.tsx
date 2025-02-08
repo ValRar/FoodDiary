@@ -58,7 +58,7 @@ export default function UserCredentialsForm({
         </div>
       </section>
       <Button type="submit" className="font-bold text-2xl my-2">
-        <span>Войти</span>
+        <span>Авторизоваться</span>
       </Button>
       {state?.message && <span>{state.message}</span>}
     </form>
